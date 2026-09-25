@@ -9,9 +9,913 @@ title: Codeception Changelog
 
 
 
+### Codeception 5.3.6: 5.3.6
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/09/25 12:37:55 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+
+
+
+## What's Changed
+* Prevent serialization of non-backed enums by **[innerfly](https://github.com/innerfly)** in https://github.com/Codeception/Codeception/pull/6796
+* Fix cs by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6930
+* Fix typo in Debug::debug() docblock by **[rhuijts](https://github.com/rhuijts)** in https://github.com/Codeception/Codeception/pull/6934
+* Update Configuration.php: Minor rewording of error message by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/Codeception/pull/6936
+* Improve handling of coverage exclude option on PHPUnit 11+ by **[marcovtwout](https://github.com/marcovtwout)** in https://github.com/Codeception/Codeception/pull/6937
+* Add support for phpunit/php-code-coverage 14.0 by **[michalbundyra](https://github.com/michalbundyra)** in https://github.com/Codeception/Codeception/pull/6938
+* catch general Throwable for before test execution code by **[applyACS](https://github.com/applyACS)** in https://github.com/Codeception/Codeception/pull/6929
+* Support for Variadic parameters by **[mvvelde](https://github.com/mvvelde)** in https://github.com/Codeception/Codeception/pull/6932
+* Fix compatibility with sebastian/diff v8.3.0 + v9.0.0 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6941
+* Migrate internal tests to the canonical v5 Support layout by **[TavoNiievez](https://github.com/TavoNiievez)** in https://github.com/Codeception/Codeception/pull/6943
+* Fix `ArgumentCountError` in ReportPrinter when test names contain `%` characters by **[Fahl-Design](https://github.com/Fahl-Design)** in https://github.com/Codeception/Codeception/pull/6927
+* Minor: More details about `codecept run -g failed` by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/Codeception/pull/6926
+* Bump actions/checkout and actions/cache by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6948
+* fix(ci): relax expected shell output in LocalCept by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6950
+
+## New Contributors
+* **[innerfly](https://github.com/innerfly)** made their first contribution in https://github.com/Codeception/Codeception/pull/6796
+* **[rhuijts](https://github.com/rhuijts)** made their first contribution in https://github.com/Codeception/Codeception/pull/6934
+* **[michalbundyra](https://github.com/michalbundyra)** made their first contribution in https://github.com/Codeception/Codeception/pull/6938
+* **[applyACS](https://github.com/applyACS)** made their first contribution in https://github.com/Codeception/Codeception/pull/6929
+* **[mvvelde](https://github.com/mvvelde)** made their first contribution in https://github.com/Codeception/Codeception/pull/6932
+
+**Full Changelog**: https://github.com/Codeception/Codeception/compare/5.3.5...5.3.6
+
+
+### module-symfony 3.11.0: 3.11.0
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/09/04 08:45:11 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+## What's Changed
+
+> **20 new methods.** No breaking changes, no new configuration options, no new traits.
+> PHP `^8.2` · Symfony `5.4` · `6.4` · `7.4` · `8.1`
+
+## 🗄️ Doctrine
+
+| Method | |
+| --- | --- |
+| `grabEntityManager()` | The EntityManager on the Actor, honouring `em_service`. |
+| `resetDoctrineManager()` | Reopens an EntityManager closed by a failed `flush()`. Clears it if still open. |
+| `seeDoctrineSchemaIsValid()` | In-process `doctrine:schema:validate`. |
+| `seeNumQueriesIsLessThan()` | N+1 guard. |
+| `dontSeeDuplicateQueries()` | N+1 guard. |
+
+```php
+$I->amOnPage('/register');
+$I->resetDoctrineManager();
+$I->seeNumRecords(1, User::class);
+```
+
+## 🧩 Services
+
+| Method | |
+| --- | --- |
+| `grabContainer()` | The **test** container — private services included. |
+| `mockService()` / `unmockService()` | Swap a service for a double. Survives kernel reboots. |
+
+```php
+$I->mockService('http_client', new MockHttpClient($responses));
+```
+
+## 🔐 Security
+
+| Method | |
+| --- | --- |
+| `seeUserIsGranted()` / `dontSeeUserIsGranted()` | Runs the app's voters — **with a subject**. |
+
+```php
+$I->seeUserIsGranted('EDIT', $post);
+```
+
+## 📨 Messenger
+
+> [!NOTE]
+> Requires `symfony/messenger >= 6.3`.
+
+| Method | |
+| --- | --- |
+| `grabMessengerTransport()` | The in-memory transport itself. |
+| `seeMessengerTransportContains()` | A message class is queued. |
+| `seeMessengerQueueCount()` | Pending count — sent minus acknowledged or rejected. |
+| `consumeMessengerMessages()` | Handles queued envelopes in-process. |
+
+```php
+$I->seeMessengerQueueCount(1, 'async');
+$I->consumeMessengerMessages('async');
+```
+
+## 🖥️ Console
+
+> [!NOTE]
+> Requires Symfony `8.1`. `runSymfonyConsoleCommand()` is unchanged and remains the path for earlier versions.
+
+| Method | |
+| --- | --- |
+| `runCommand()` | Returns an `ExecutionResult`: status code, stdout and stderr separately. |
+| `assertCommandIsSuccessful()` | |
+| `assertCommandFailed()` | |
+| `assertCommandIsInvalid()` | |
+| `assertCommandResultEquals()` | |
+
+```php
+$result = $I->runCommand('app:import', ['--dry-run' => true]);
+$I->assertCommandIsSuccessful($result);
+```
+
+## 🔔 Session
+
+| Method | |
+| --- | --- |
+| `assertSessionHasFlashMessage()` | Non-destructive — reads the flash bag with `peek()`. |
+
+```php
+$I->assertSessionHasFlashMessage('success', 'Your changes were saved.');
+```
+
+---
+
+## 🛠️ Also
+
+- `_getEntityManager()` reopens a closed manager, so one failed write no longer cascades through the test.
+- Clearer failure when the `em_service` service is missing or is the wrong type.
+- Internal-domain lookup is now `O(N)` instead of `O(N²)`.
+
+<sub>[#246](https://github.com/Codeception/module-symfony/issues/246) · [#247](https://github.com/Codeception/module-symfony/issues/247) · [#248](https://github.com/Codeception/module-symfony/issues/248) — **[Full changelog](https://github.com/Codeception/module-symfony/compare/3.10.1...3.11.0)**</sub>
+
+
+
+### module-phpbrowser 4.1.0: 4.1.0
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2026/07/27 06:12:28 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+
+
+
+# [4.1.0](https://github.com/Codeception/module-phpbrowser/compare/4.0.0...4.1.0) (2026-07-27)
+
+
+### Features
+
+* add support for Guzzle 8 ([23dba2f](https://github.com/Codeception/module-phpbrowser/commit/23dba2f6e159dfca681b2c5a4186f1d77f316d5a))
+
+
+
+### lib-web 2.1.1: 2.1.1
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2026/07/22 06:35:20 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+
+
+
+## What's Changed
+* chore(deps): allow installation of guzzlehttp/psr7:3 by **[GrahamCampbell](https://github.com/GrahamCampbell)** in https://github.com/Codeception/lib-web/pull/24
+
+## New Contributors
+* **[GrahamCampbell](https://github.com/GrahamCampbell)** made their first contribution in https://github.com/Codeception/lib-web/pull/24
+
+**Full Changelog**: https://github.com/Codeception/lib-web/compare/2.1.0...2.1.1
+
+
+### module-symfony 3.10.1: 3.10.1
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/07/10 20:20:54 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+### What's Changed
+* Restore doctrine.connections after kernel shutdown by **[d-mitrofanov-v](https://github.com/d-mitrofanov-v)** in https://github.com/Codeception/module-symfony/pull/244
+
+
+**Full Changelog**: https://github.com/Codeception/module-symfony/compare/3.10.0...3.10.1
+
+
+### module-symfony 3.10.0: 3.10.0
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/06/27 01:10:38 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+Minor release featuring two new assertion trait groups, Symfony 8.1 test support, plus DX, performance, and bug fixes. 
+
+## 🚀 New Features
+
+### Messenger Assertions
+Introduced `MessengerAssertionsTrait` for testing dispatched messages ([[#241](https://github.com/Codeception/module-symfony/issues/241)]):
+* `seeMessageDispatched()`
+* `dontSeeMessageDispatched()`
+* `seeDispatchedMessageCount()`
+* `grabDispatchedMessageClasses()`
+
+### Symfony-Inherited Assertions
+Ported directly from Symfony's own test helpers ([[#240](https://github.com/Codeception/module-symfony/issues/240)]):
+
+* **Browser:** `assertBrowserHistoryIsOnFirstPage()`, `assertBrowserHistoryIsNotOnFirstPage()`, `assertBrowserHistoryIsOnLastPage()`, `assertBrowserHistoryIsNotOnLastPage()`
+* **DomCrawler:** `assertSelectorCount()`, `assertAnySelectorTextContains()`, `assertAnySelectorTextSame()`, `assertAnySelectorTextNotContains()`
+* **Mailer:** `getMailerEvents()`, `getMailerMessages()`, `getMailerMessage()`
+* **Mime:** `assertEmailAddressNotContains()`, `assertEmailSubjectContains()`, `assertEmailSubjectNotContains()`
+
+## 🔄 Changed
+
+### Mail/Mime Assertions Refactor
+Assertions now operate on `RawMessage` instead of `Email` to support any sent message type ([[#232](https://github.com/Codeception/module-symfony/issues/232)]):
+* `grabLastSentEmail()` return type widened from `?Email` to `?RawMessage`.
+* `assertEmailAddressContains()`, `assertEmailHasHeader()`, `assertEmailNotHasHeader()`, `assertEmailHeaderSame()`, and `assertEmailHeaderNotSame()` now accept `?Message` instead of `?Email`.
+
+> ⚠️ **Important Runtime Note:**
+> The object returned by `grabLastSentEmail()` remains an `Email` instance at runtime, but its declared type is now the wider `RawMessage`. If your tests rely on `Email`-specific methods (like `->getTo()` or `->getSubject()`), you must explicitly narrow the type using `instanceof Email` or a type cast. Alternatively, migrate to the new `assertEmailSubjectContains()` or header assertions where possible.
+
+### Quality of Life & Performance
+* Improved DX, type safety, and performance across all assertion traits by adding/tightening type hints and reducing redundant operations in hot paths. ([[#235](https://github.com/Codeception/module-symfony/issues/235)], [[#234](https://github.com/Codeception/module-symfony/issues/234)])
+
+## 🐛 Fixed
+
+* **Doctrine:** Fixed missing security context in Doctrine entity listeners after a kernel reboot. ([[#236](https://github.com/Codeception/module-symfony/issues/236)])
+* **Profiler:** Fixed profiler service deprecation by switching to the non-deprecated internal service ID. ([[#237](https://github.com/Codeception/module-symfony/issues/237)])
+
+## 🛠️ Maintenance
+
+* Added **Symfony 8.1** to the test matrix and included `symfony/messenger` as an unchanged dev dependency. ([[#243](https://github.com/Codeception/module-symfony/issues/243)])
+* Applied the 7.4 `reset-formats` patch using GNU patch (fuzz) and pinned `codeception/module-rest` to `^3.4` in the functional suite. ([[#242](https://github.com/Codeception/module-symfony/issues/242)])
+
+## 🤝 New Contributors
+* **@krrico** made their first contribution in https://github.com/Codeception/module-symfony/pull/232
+
+**Full Changelog**: https://github.com/Codeception/module-symfony/compare/3.9.1...3.10.0
+
+
+### lib-innerbrowser 4.1.1: 4.1.1
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/06/26 22:08:38 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+
+
+
+## What's Changed
+* Fix moveBack() history pointer + add symmetric moveForward() by **[TavoNiievez](https://github.com/TavoNiievez)** in https://github.com/Codeception/lib-innerbrowser/pull/87
+
+
+**Full Changelog**: https://github.com/Codeception/lib-innerbrowser/compare/4.1.0...4.1.1
+
+
+### module-symfony 3.9.2: 3.9.2
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/06/23 05:24:22 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+## What's Changed
+* Restore InnerBrowser navigation state for Codeception runs by **[TavoNiievez](https://github.com/TavoNiievez)** in https://github.com/Codeception/module-symfony/pull/238
+
+
+**Full Changelog**: https://github.com/Codeception/module-symfony/compare/3.9.1...3.9.2
+
+
+### module-symfony 3.9.1: 3.9.1
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/04/14 20:34:41 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+### What's Changed
+* fix inconsistencies across assertion traits and tests  in https://github.com/Codeception/module-symfony/pull/228, https://github.com/Codeception/module-symfony/pull/229 and https://github.com/Codeception/module-symfony/pull/230.
+
+**Full Changelog**: https://github.com/Codeception/module-symfony/compare/3.9.0...3.9.1
+
+
+### module-mezzio 4.1.0: 4.1.0
+
+Released by [![](https://avatars.githubusercontent.com/u/152236?v=4&s=16){:height="16" width="16"} Slamdunk](https://github.com/Slamdunk) on 2026/04/08 14:18:15 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+
+
+
+## What's Changed
+* Migrate from container-interop to psr/container by **[luiscunhaafricainternetgroup](https://github.com/luiscunhaafricainternetgroup)** in https://github.com/Codeception/module-mezzio/pull/21
+
+
+**Full Changelog**: https://github.com/Codeception/module-mezzio/compare/4.0.2...4.1.0
+
+
+### module-symfony 3.9.0: 3.9.0
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/04/01 00:06:35 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+## What's Changed
+* Allow Symfony 8 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-symfony/pull/225
+* Performance Optimizations and Code Audit by **[TavoNiievez](https://github.com/TavoNiievez)** in https://github.com/Codeception/module-symfony/commit/768cdc6fa41dfd85f92b180ffccd90daa0fa26f4
+* Run module tests using PHPUnit by **[TavoNiievez](https://github.com/TavoNiievez)** in https://github.com/Codeception/module-symfony/commit/c37d23e5b6cae52a5b7ca47c87f27c1f524fb0cf
+
+
+**Full Changelog**: https://github.com/Codeception/module-symfony/compare/3.8.0...3.9.0
+
+
+### module-redis 3.2.3: 3.2.3
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2026/02/18 06:48:20 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+
+
+
+## What's Changed
+* Add support for sebastian/comparator v8 in https://github.com/Codeception/module-redis/pull/25
+
+
+**Full Changelog**: https://github.com/Codeception/module-redis/compare/3.2.2...3.2.3
+
+
+### module-webdriver 4.0.5: 4.0.5
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2026/02/18 06:32:29 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+
+
+
+## What's Changed
+* Add support for PHPUnit 13 https://github.com/Codeception/module-webdriver/pull/145
+
+
+**Full Changelog**: https://github.com/Codeception/module-webdriver/compare/4.0.4...4.0.5
+
+
+### lib-innerbrowser 4.1.0: 4.1.0
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2026/02/18 06:25:58 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+
+
+
+## What's Changed
+* chore(deps): add support for phpunit 13 in https://github.com/Codeception/lib-innerbrowser/pull/85
+* chore(ci): remove obsolete workaround for php > 8.5 in https://github.com/Codeception/lib-innerbrowser/pull/86
+
+
+**Full Changelog**: https://github.com/Codeception/lib-innerbrowser/compare/4.0.8...4.1.0
+
+
+### Codeception 5.3.5: 5.3.5
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/02/18 06:22:46 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+
+
+
+## What's Changed
+* PHP 8.5: Avoid accessing deprecated $http_response_header by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6924
+* Add support for PHPUnit 13 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6925
+
+
+**Full Changelog**: https://github.com/Codeception/Codeception/compare/5.3.4...5.3.5
+
+
+### lib-web 2.1.0: 2.1.0
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2026/02/06 15:23:02 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+
+
+
+# [2.1.0](https://github.com/Codeception/lib-web/compare/2.0.1...2.1.0) (2026-02-06)
+
+
+### Features
+
+* add support for phpunit 13 ([[#23](https://github.com/Codeception/lib-web/issues/23)](https://github.com/Codeception/lib-web/issues/23)) ([a030a3a](https://github.com/Codeception/lib-web/commit/a030a3a22fc8e856b5957086794ed5403c7992d9))
+
+
+
+
+
+
+### lib-asserts 3.2.0: 3.2.0
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2026/02/06 15:20:17 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+
+
+
+# [3.2.0](https://github.com/Codeception/lib-asserts/compare/3.1.0...3.2.0) (2026-02-06)
+
+
+### Features
+
+* add support for phpunit 13 ([[#20](https://github.com/Codeception/lib-asserts/issues/20)](https://github.com/Codeception/lib-asserts/issues/20)) ([f161e5d](https://github.com/Codeception/lib-asserts/commit/f161e5d3a9e5ae573ca01cfb3b5601ff5303df03))
+
+
+
+
+
+
+### module-phpbrowser 4.0.0: 4.0.0
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2026/01/23 13:25:25 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+
+
+
+# [4.0.0](https://github.com/Codeception/module-phpbrowser/compare/3.0.2...4.0.0) (2026-01-23)
+
+
+### Features
+
+* allow symfony 8 ([0c65e95](https://github.com/Codeception/module-phpbrowser/commit/0c65e956c1b355d0edb5b4c279265255ac4ac3f6))
+
+
+### BREAKING CHANGES
+
+* The native object return type was added to the doRequest() method of the Guzzle connector.
+That might break code extending from this class.
+
+
+
+
+
+
+### Codeception 5.3.4: 5.3.4
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/01/14 12:07:18 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+
+
+
+## What's Changed
+* Use attributes syntax in gherkin:snippets by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6917
+* PHP 8.5: Fix usage of deprecated $http_response_header by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6919
+* Do not expect the register_argc_argv ini setting in cli for php >= 8.5 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6921
+
+
+**Full Changelog**: https://github.com/Codeception/Codeception/compare/5.3.3...5.3.4
+
+
+### module-mongodb 3.1.0: 3.1.0
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2026/01/09 15:54:01 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
+
+
+
+## What's Changed
+* Fix CI, update PHP support and MongoDB driver by **[pbromb](https://github.com/pbromb)** in https://github.com/Codeception/module-mongodb/pull/18
+* Drop support for PHP 8.0 + 8.1 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-mongodb/pull/19
+
+## New Contributors
+* **[pbromb](https://github.com/pbromb)** made their first contribution in https://github.com/Codeception/module-mongodb/pull/18
+* **[W0rma](https://github.com/W0rma)** made their first contribution in https://github.com/Codeception/module-mongodb/pull/19
+
+**Full Changelog**: https://github.com/Codeception/module-mongodb/compare/3.0.0...3.1.0
+
+
+### module-asserts 3.3.0: 3.3.0
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2025/12/24 12:38:38 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+
+
+
+## What's Changed
+* Test against PHP 8.5 in https://github.com/Codeception/module-asserts/pull/34
+* feat: add replacements for deprecated `assertContainsOnly()` and `assertNotContainsOnly()` + drop support for `lib-asserts` < 3.1 in https://github.com/Codeception/module-asserts/pull/35
+  * `assertContainsNotOnlyArray()`
+  * `assertContainsNotOnlyBool()`
+  * `assertContainsNotOnlyCallable()`
+  * `assertContainsNotOnlyFloat()`
+  * `assertContainsNotOnlyInstancesOf()`
+  * `assertContainsNotOnlyInt()`
+  * `assertContainsNotOnlyIterable()`
+  * `assertContainsNotOnlyNumeric()`
+  * `assertContainsNotOnlyObject()`
+  * `assertContainsNotOnlyResource()`
+  * `assertContainsNotOnlyClosedResource()`
+  * `assertContainsNotOnlyScalar()`
+  * `assertContainsNotOnlyString()`
+  * `assertContainsOnlyArray()`
+  * `assertContainsOnlyBool()`
+  * `assertContainsOnlyCallable()`
+  * `assertContainsOnlyFloat()`
+  * `assertContainsOnlyInt()`
+  * `assertContainsOnlyIterable()`
+  * `assertContainsOnlyNumeric()`
+  * `assertContainsOnlyObject()`
+  * `assertContainsOnlyResource()`
+  * `assertContainsOnlyClosedResource()`
+  * `assertContainsOnlyScalar()`
+  * `assertContainsOnlyString()`
+
+
+**Full Changelog**: https://github.com/Codeception/module-asserts/compare/3.2.1...3.3.0
+
+
+### module-rest 3.4.3: 3.4.3
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2025/12/22 14:15:21 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+
+
+
+## What's Changed
+* Allow softcreatr/jsonpath v1.0 in https://github.com/Codeception/module-rest/pull/120
+
+
+**Full Changelog**: https://github.com/Codeception/module-rest/compare/3.4.2...3.4.3
+
+
+### lib-asserts 3.1.0: 3.1.0
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/12/22 08:25:52 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+
+
+
+# [3.1.0](https://github.com/Codeception/lib-asserts/compare/3.0.1...3.1.0) (2025-12-22)
+
+
+### Features
+
+* add replacements for deprecated assertContainsOnly() and assertNotContainsOnly() ([[#19](https://github.com/Codeception/lib-asserts/issues/19)](https://github.com/Codeception/lib-asserts/issues/19)) ([8e161f3](https://github.com/Codeception/lib-asserts/commit/8e161f38a71cdf3dc638c5427df21c0f01f12d13))
+  * `assertContainsNotOnlyArray()`
+  * `assertContainsNotOnlyBool()`
+  * `assertContainsNotOnlyCallable()`
+  * `assertContainsNotOnlyFloat()`
+  * `assertContainsNotOnlyInstancesOf()`
+  * `assertContainsNotOnlyInt()`
+  * `assertContainsNotOnlyIterable()`
+  * `assertContainsNotOnlyNumeric()`
+  * `assertContainsNotOnlyObject()`
+  * `assertContainsNotOnlyResource()`
+  * `assertContainsNotOnlyClosedResource()`
+  * `assertContainsNotOnlyScalar()`
+  * `assertContainsNotOnlyString()`
+  * `assertContainsOnlyArray()`
+  * `assertContainsOnlyBool()`
+  * `assertContainsOnlyCallable()`
+  * `assertContainsOnlyFloat()`
+  * `assertContainsOnlyInt()`
+  * `assertContainsOnlyIterable()`
+  * `assertContainsOnlyNumeric()`
+  * `assertContainsOnlyObject()`
+  * `assertContainsOnlyResource()`
+  * `assertContainsOnlyClosedResource()`
+  * `assertContainsOnlyScalar()`
+  * `assertContainsOnlyString()`
+* add support for php 8.5 [[#18](https://github.com/Codeception/lib-asserts/issues/18)](https://github.com/Codeception/lib-asserts/pull/18)
+
+
+
+
+
+
+### module-yii2 v2.0.5: v2.0.5
+
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2025/12/18 19:07:02 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+
+
+
+## What's Changed
+* Fix missing recreateComponents in configureClient() breaks tests after v2 upgrade by **[Eseperio](https://github.com/Eseperio)** in https://github.com/Codeception/module-yii2/pull/143
+
+## New Contributors
+* **[Eseperio](https://github.com/Eseperio)** made their first contribution in https://github.com/Codeception/module-yii2/pull/143
+
+**Full Changelog**: https://github.com/Codeception/module-yii2/compare/v2.0.4...v2.0.5
+
+
+### module-rest 3.4.2: 3.4.2
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2025/12/18 12:02:38 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+
+
+
+## What's Changed
+* Test against PHP 8.5 + drop support for PHP < 8.2 in https://github.com/Codeception/module-rest/pull/117
+* Bump codeception/util-universalframework version to 2 in https://github.com/Codeception/module-rest/pull/118
+* Add support for softcreatr/jsonpath v0.11 by **[npwvestjens](https://github.com/npwvestjens)** in https://github.com/Codeception/module-rest/pull/119
+
+## New Contributors
+* **[npwvestjens](https://github.com/npwvestjens)** made their first contribution in https://github.com/Codeception/module-rest/pull/119
+
+**Full Changelog**: https://github.com/Codeception/module-rest/compare/3.4.1...3.4.2
+
+
+### Codeception 5.3.3: 5.3.3
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/12/17 15:19:44 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+
+
+
+## What's Changed
+* Fix empty data provider case by **[joester89](https://github.com/joester89)** in https://github.com/Codeception/Codeception/pull/6866
+* Fix Composer `branch-alias` for feature releases 5.3.x by **[llaville](https://github.com/llaville)** in https://github.com/Codeception/Codeception/pull/6879
+* Add guard before deleting directory by **[fabacino](https://github.com/fabacino)** in https://github.com/Codeception/Codeception/pull/6877
+* Remove Reflection*::setAccessible() usage by **[Disservin](https://github.com/Disservin)** in https://github.com/Codeception/Codeception/pull/6869
+* Update RunProcess.php: Removing MailCatcher by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/Codeception/pull/6815
+* update readme links by **[Arhell](https://github.com/Arhell)** in https://github.com/Codeception/Codeception/pull/6882
+* chore: allow installation of lib-asserts v3 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6887
+* Replace backtick with shell_exec to prevent php8.5 deprecation by **[craig-mcmahon](https://github.com/craig-mcmahon)** in https://github.com/Codeception/Codeception/pull/6892
+* Readme updated: Contribution link fixed by **[Sunsetboy](https://github.com/Sunsetboy)** in https://github.com/Codeception/Codeception/pull/6895
+* Update Cest.php: Minor rewording by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/Codeception/pull/6897
+* Update composer.json: Updating description by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/Codeception/pull/6896
+* Fix test for lib-asserts v3 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6899
+* Avoid declaring nullable parameter implicitly in BuildCest by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6900
+* Add support for never return type in DryRun by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6901
+* Fix ci when using behat/gherkin v4.15 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6902
+* Test against PHP 8.5 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6903
+* CI: fix module-phpbrowser test in experimental build by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6904
+* Bump actions/checkout from 3 to 6 by **[dependabot](https://github.com/dependabot)**[bot] in https://github.com/Codeception/Codeception/pull/6893
+* Remove obsolete version check in tests by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6907
+* Add support for iterable return type in DryRun by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6906
+* Add support for symfony 8 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6898
+* Use upper-cased suite names by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/Codeception/pull/6909
+* Update readme.md: Cleaning up Installation by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/Codeception/pull/6911
+* Update Run.php: Adding `codecept run -g failed` by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/Codeception/pull/6910
+
+## New Contributors
+* **[joester89](https://github.com/joester89)** made their first contribution in https://github.com/Codeception/Codeception/pull/6866
+* **[llaville](https://github.com/llaville)** made their first contribution in https://github.com/Codeception/Codeception/pull/6879
+* **[Disservin](https://github.com/Disservin)** made their first contribution in https://github.com/Codeception/Codeception/pull/6869
+* **[Sunsetboy](https://github.com/Sunsetboy)** made their first contribution in https://github.com/Codeception/Codeception/pull/6895
+* **[dependabot](https://github.com/dependabot)**[bot] made their first contribution in https://github.com/Codeception/Codeception/pull/6893
+
+**Full Changelog**: https://github.com/Codeception/Codeception/compare/5.3.2...5.3.3
+
+
+### module-redis 3.2.2: 3.2.2
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2025/12/16 07:40:07 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+
+
+
+## What's Changed
+* Test against PHP 8.5 in https://github.com/Codeception/module-redis/pull/24
+* Allow PRedis version 3 by **[ChrisTitos](https://github.com/ChrisTitos)** in https://github.com/Codeception/module-redis/pull/23
+
+## New Contributors
+* **[ChrisTitos](https://github.com/ChrisTitos)** made their first contribution in https://github.com/Codeception/module-redis/pull/23
+
+**Full Changelog**: https://github.com/Codeception/module-redis/compare/3.2.1...3.2.2
+
+
+### lib-innerbrowser 4.0.8: 4.0.8
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2025/12/15 13:16:59 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+
+
+
+## What's Changed
+* Fix PHP 8.5 deprecation warning in https://github.com/Codeception/lib-innerbrowser/pull/81
+* Fix use statements (docs) in https://github.com/Codeception/lib-innerbrowser/pull/83
+* Fix type error for element without form in https://github.com/Codeception/lib-innerbrowser/pull/82
+* Allow symfony 8 in https://github.com/Codeception/lib-innerbrowser/pull/84
+
+
+**Full Changelog**: https://github.com/Codeception/lib-innerbrowser/compare/4.0.7...4.0.8
+
+
+### module-webdriver 4.0.4: 4.0.4
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2025/12/08 13:15:00 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+
+
+
+## What's Changed
+* `pressKey`: Fixing typehint by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/module-webdriver/pull/141
+* Bump CI dependencies in https://github.com/Codeception/module-webdriver/pull/143
+* Allow installation of codeception/lib-web v2 in https://github.com/Codeception/module-webdriver/pull/144
+
+
+**Full Changelog**: https://github.com/Codeception/module-webdriver/compare/4.0.3...4.0.4
+
+
+### module-filesystem 3.0.2: 3.0.2
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2025/12/07 05:15:24 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+
+
+
+## What's Changed
+* Test against PHP 8.2 - 8.5 + drop PHP < 8.2 in https://github.com/Codeception/module-filesystem/pull/23
+* Support symfony/finder v8 in https://github.com/Codeception/module-filesystem/pull/24
+
+**Full Changelog**: https://github.com/Codeception/module-filesystem/compare/3.0.1...3.0.2
+
+
+### lib-xml 1.1.1: 1.1.1
+
+Released by [![](https://avatars.githubusercontent.com/u/20659830?v=4&s=16){:height="16" width="16"} W0rma](https://github.com/W0rma) on 2025/12/05 14:23:54 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
+
+
+
+## What's Changed
+* Test against PHP 8.5 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/lib-xml/pull/9
+* Allow symfony/css-selector v8 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/lib-xml/pull/10
+
+
+**Full Changelog**: https://github.com/Codeception/lib-xml/compare/1.1.0...1.1.1
+
+
+### module-symfony 3.8.0: 3.8.0
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/11/27 21:32:44 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+## What's Changed
+* Standardize to PHP 8.2 and PSR-4 by **[TavoNiievez](https://github.com/TavoNiievez)** in https://github.com/Codeception/module-symfony/pull/217
+* Add notifier assertions trait by **[d-mitrofanov-v](https://github.com/d-mitrofanov-v)** in https://github.com/Codeception/module-symfony/pull/220
+* Simplify the module code by **[TavoNiievez](https://github.com/TavoNiievez)** in https://github.com/Codeception/module-symfony/pull/222
+
+## New Contributors
+* **[d-mitrofanov-v](https://github.com/d-mitrofanov-v)** made their first contribution in https://github.com/Codeception/module-symfony/pull/220
+
+**Full Changelog**: https://github.com/Codeception/module-symfony/compare/3.7.1...3.8.0
+
+
+### lib-web 2.0.1: 2.0.1
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/11/27 21:15:41 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+
+
+
+## What's Changed
+* Test against PHP 8.5 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/lib-web/pull/19
+* Allow Symfony 8 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/lib-web/pull/20
+* Update Web.php: Added hints that `seeCurrentUrlEquals` etc. are only … by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/lib-web/pull/18
+
+
+**Full Changelog**: https://github.com/Codeception/lib-web/compare/2.0.0...2.0.1
+
+
+### module-doctrine 3.3.0: 3.3.0
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/11/13 08:09:32 / [Repository](https://github.com/Codeception/module-doctrine)   / [Releases](https://github.com/Codeception/module-doctrine/releases)
+
+
+
+## What's Changed
+* Update Doctrine.php: Typo by **[ThomasLandauer](https://github.com/ThomasLandauer)** in https://github.com/Codeception/module-doctrine/pull/43
+* Remove Reflection*::setAccessible() calls by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-doctrine/pull/44
+* Enable native lazy objects if possible to fix the CI when using symfony 8 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-doctrine/pull/45
+* Fix deprecation warnings in doctrine/collections:2.4 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-doctrine/pull/46
+* Drop PHP 8.1 + test against PHP 8.5 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-doctrine/pull/48
+* Fix test with object id by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-doctrine/pull/47
+
+
+**Full Changelog**: https://github.com/Codeception/module-doctrine/compare/3.2.0...3.3.0
+
+
+### module-asserts 3.2.1: 3.2.1
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/10/29 14:44:06 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+
+
+
+## What's Changed
+* chore: allow installation of lib-asserts v3 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-asserts/pull/33
+
+
+**Full Changelog**: https://github.com/Codeception/module-asserts/compare/3.2.0...3.2.1
+
+
+### lib-asserts 3.0.1: 3.0.1
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/10/23 13:00:30 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+
+
+
+## [3.0.1](https://github.com/Codeception/lib-asserts/compare/3.0.0...3.0.1) (2025-10-23)
+
+
+### Bug Fixes
+
+* re-add assertNotContainsEquals() because it is still part of phpunit ([5cd564a](https://github.com/Codeception/lib-asserts/commit/5cd564a7ea08000c1f491796c57103a1a4d41bb3))
+
+
+
+
+
+
+### lib-innerbrowser 4.0.7: 4.0.7
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/10/23 05:53:45 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+
+
+
+## What's Changed
+* Chore: allow codeception/lib-web v2 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/lib-innerbrowser/pull/80
+
+
+**Full Changelog**: https://github.com/Codeception/lib-innerbrowser/compare/4.0.6...4.0.7
+
+
+### module-laravel 3.2.1: 3.2.1
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/09/25 22:49:38 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+
+
+
+## What's Changed
+* Fix guard name implitic null issue by **[npwvestjens](https://github.com/npwvestjens)** in https://github.com/Codeception/module-laravel/pull/56
+
+**Full Changelog**: https://github.com/Codeception/module-laravel/compare/3.2.0...3.2.1
+
+
+### lib-xml 1.1.0: 1.1.0
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/09/22 05:26:43 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
+
+
+
+## What's Changed
+* Test against PHP 8.3 + 8.4, drop PHP 8.0 + 8.1 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/lib-xml/pull/5
+* Add support for codeception/lib-web v2 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/lib-xml/pull/8
+
+**Full Changelog**: https://github.com/Codeception/lib-xml/compare/1.0.3...1.1.0
+
+
+### lib-asserts 3.0.0: 3.0.0
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/09/04 13:02:26 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+
+
+
+# [3.0.0](https://github.com/Codeception/lib-asserts/compare/2.2.0...3.0.0) (2025-09-04)
+
+
+
+
+
+
+### lib-web 2.0.0: 2.0.0
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/09/04 11:39:54 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+
+
+
+# [2.0.0](https://github.com/Codeception/lib-web/compare/1.0.7...2.0.0) (2025-09-04)
+
+
+### Bug Fixes
+
+* **ci:** correct branch name ([f901da6](https://github.com/Codeception/lib-web/commit/f901da66668ddaeb8bb9dd2b1e8b19dd83e96b99))
+
+
+
+
+
+
+### module-phpbrowser 3.0.2: 3.0.2
+
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/09/04 10:46:47 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+
+
+
+## [3.0.2](https://github.com/Codeception/module-phpbrowser/compare/3.0.1...3.0.2) (2025-09-04)
+
+
+### Bug Fixes
+
+* Merge pull request [[#39](https://github.com/Codeception/module-phpbrowser/issues/39)](https://github.com/Codeception/module-phpbrowser/issues/39) from leobedrosian/fix-multipart-format-nested-arrays ([ff2ecb3](https://github.com/Codeception/module-phpbrowser/commit/ff2ecb354e5a48f80a492595ecb588b125fc9013))
+* use local server in tests httpstat.us is down ([66fc8c5](https://github.com/Codeception/module-phpbrowser/commit/66fc8c5599a0191d31b7c9dd4618fe751ed92ea4))
+
+
+
+
+
+
+### module-symfony 3.7.1: 3.7.1
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/08/07 11:35:08 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+## What's Changed
+* Fix profiler issue in https://github.com/Codeception/module-symfony/pull/216
+
+
+**Full Changelog**: https://github.com/Codeception/module-symfony/compare/3.7.0...3.7.1
+
+
+### module-symfony 3.7.0: 3.7.0
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/08/07 03:40:49 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+
+
+
+## What's Changed
+* Module code adapted for PHPStan in https://github.com/Codeception/module-symfony/pull/213
+* Update to Symfony 7.3 in https://github.com/Codeception/module-symfony/pull/214
+
+
+**Full Changelog**: https://github.com/Codeception/module-symfony/compare/3.6.0...3.7.0
+
+
+### module-amqp 3.0.1: 3.0.1
+
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/07/25 13:24:37 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
+
+
+
+### What's Changed
+* added a reconnect configuration for ability to reconnect before each test by **[OtezVikentiy](https://github.com/OtezVikentiy)** in https://github.com/Codeception/module-amqp/pull/17
+* Test against PHP 8.4 by **[W0rma](https://github.com/W0rma)** in https://github.com/Codeception/module-amqp/pull/20
+* Explicitly declare parameter types as nullable by **[imba28](https://github.com/imba28)** in https://github.com/Codeception/module-amqp/pull/19
+
+### New Contributors
+* **[OtezVikentiy](https://github.com/OtezVikentiy)** made their first contribution in https://github.com/Codeception/module-amqp/pull/17
+* **[imba28](https://github.com/imba28)** made their first contribution in https://github.com/Codeception/module-amqp/pull/19
+
+**Full Changelog**: https://github.com/Codeception/module-amqp/compare/3.0.0...3.0.1
+
+
 ### module-symfony 3.6.0: 3.6.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/06/04 14:01:56 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/06/04 14:01:56 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -32,7 +936,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-yii2 v2.0.4: v2.0.4
 
-Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github-actions[bot]](https://github.com/apps/github-actions) on 2025/05/31 06:53:23 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/05/31 06:53:23 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -50,7 +954,7 @@ Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github
 
 ### Codeception 5.3.2: 5.3.2
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/05/26 07:51:41 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/05/26 07:51:41 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -62,7 +966,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### Codeception 5.3.1: 5.3.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/05/13 23:25:43 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/05/13 23:25:43 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -78,7 +982,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### Codeception 5.2.2: 5.2.2
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/05/07 12:49:57 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/05/07 12:49:57 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -91,7 +995,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-asserts 3.2.0: 3.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/05/07 03:33:49 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/05/07 03:33:49 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -105,7 +1009,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### Codeception 5.3.0: 5.3.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/05/06 19:04:29 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/05/06 19:04:29 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -133,7 +1037,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-doctrine 3.2.0: 3.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/04/25 05:14:21 / [Repository](https://github.com/Codeception/module-doctrine)   / [Releases](https://github.com/Codeception/module-doctrine/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/04/25 05:14:21 / [Repository](https://github.com/Codeception/module-doctrine)   / [Releases](https://github.com/Codeception/module-doctrine/releases)
 
 
 
@@ -148,7 +1052,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-asserts 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/04/24 17:21:11 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/04/24 17:21:11 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -162,7 +1066,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-yii2 v2.0.3: v2.0.3
 
-Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github-actions[bot]](https://github.com/apps/github-actions) on 2025/04/01 13:18:15 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/04/01 13:18:15 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -180,7 +1084,7 @@ Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github
 
 ### module-rest 3.4.1: 3.4.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/03/26 07:58:15 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/03/26 07:58:15 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -201,7 +1105,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### lib-asserts 2.2.0: 2.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2025/03/10 20:42:27 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2025/03/10 20:42:27 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -212,7 +1116,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-symfony 3.5.1: 3.5.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/03/09 23:04:32 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/03/09 23:04:32 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -235,7 +1139,7 @@ Added Symfony Logger assertion (`dontSeeDeprecations`) (https://github.com/Codec
 
 ### module-db 3.2.2: 3.2.2
 
-Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhajdu](https://github.com/szhajdu) on 2025/03/03 08:10:59 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16){:height="16" width="16"} szhajdu](https://github.com/szhajdu) on 2025/03/03 08:10:59 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -250,7 +1154,7 @@ Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhaj
 
 ### module-yii2 v2.0.2: v2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github-actions[bot]](https://github.com/apps/github-actions) on 2025/03/02 16:01:43 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/03/02 16:01:43 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -268,7 +1172,7 @@ Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github
 
 ### module-yii2 v2.0.1: v2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github-actions[bot]](https://github.com/apps/github-actions) on 2025/02/27 08:26:23 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/02/27 08:26:23 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -286,7 +1190,7 @@ Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github
 
 ### module-yii2 v2.0.0: v2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github-actions[bot]](https://github.com/apps/github-actions) on 2025/02/26 15:02:27 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16){:height="16" width="16"} github-actions[bot]](https://github.com/apps/github-actions) on 2025/02/26 15:02:27 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -325,7 +1229,7 @@ Released by [![](https://avatars.githubusercontent.com/in/15368?v=4&s=16) github
 
 ### module-redis 3.2.1: 3.2.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2025/02/24 06:24:43 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2025/02/24 06:24:43 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -335,7 +1239,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-web 1.0.7: 1.0.7
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2025/02/23 14:06:56 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2025/02/23 14:06:56 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
 
 
 
@@ -347,7 +1251,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.2.1: 5.2.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/02/20 15:01:00 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/02/20 15:01:00 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -360,7 +1264,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### Codeception 5.2.0: 5.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/02/16 20:31:08 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/02/16 20:31:08 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -389,7 +1293,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-webdriver 4.0.3: 4.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2025/02/14 07:14:37 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2025/02/14 07:14:37 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -410,7 +1314,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 4.0.6: 4.0.6
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2025/02/14 07:04:31 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2025/02/14 07:04:31 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -424,7 +1328,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 3.2.1: 3.2.1
 
-Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhajdu](https://github.com/szhajdu) on 2025/02/06 19:56:35 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16){:height="16" width="16"} szhajdu](https://github.com/szhajdu) on 2025/02/06 19:56:35 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -439,7 +1343,7 @@ Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhaj
 
 ### module-db 3.2.0: 3.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhajdu](https://github.com/szhajdu) on 2025/01/31 22:25:44 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16){:height="16" width="16"} szhajdu](https://github.com/szhajdu) on 2025/01/31 22:25:44 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -462,7 +1366,7 @@ Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhaj
 
 ### module-laravel 3.2.0: 3.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2025/01/13 11:42:45 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2025/01/13 11:42:45 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -475,7 +1379,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-yii2 1.1.12: 1.1.12
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2024/12/09 14:36:21 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2024/12/09 14:36:21 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -484,7 +1388,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### module-yii2 1.1.11: 1.1.11
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2024/12/08 10:21:37 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2024/12/08 10:21:37 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -495,7 +1399,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### module-symfony 3.5.0: 3.5.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/11/14 05:59:41 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/11/14 05:59:41 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -582,7 +1486,7 @@ assertNoFormValue
 
 ### lib-innerbrowser 4.0.5: 4.0.5
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/09/13 05:15:37 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/09/13 05:15:37 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -591,7 +1495,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 4.0.4: 4.0.4
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/09/13 05:14:55 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/09/13 05:14:55 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -601,7 +1505,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 4.0.2: 4.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/08/10 00:21:53 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/08/10 00:21:53 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -620,7 +1524,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-redis 3.2.0: 3.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/07/28 11:47:55 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/07/28 11:47:55 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -630,7 +1534,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 3.4.0: 3.4.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/07/12 06:34:39 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/07/12 06:34:39 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -651,7 +1555,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-symfony 3.4.0: 3.4.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/06/09 13:34:44 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/06/09 13:34:44 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -670,7 +1574,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-db 3.1.4: 3.1.4
 
-Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhajdu](https://github.com/szhajdu) on 2024/05/16 20:15:44 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16){:height="16" width="16"} szhajdu](https://github.com/szhajdu) on 2024/05/16 20:15:44 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -684,7 +1588,7 @@ Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhaj
 
 ### module-doctrine2 3.0.4: 3.0.4
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/04/04 16:33:24 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/04/04 16:33:24 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -697,7 +1601,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-symfony 3.3.2: 3.3.2
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/03/18 15:08:50 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/03/18 15:08:50 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -710,7 +1614,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-symfony 3.3.1: 3.3.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/03/15 20:36:03 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/03/15 20:36:03 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -723,7 +1627,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### Codeception 5.1.2: 5.1.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/03/07 07:22:27 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/03/07 07:22:27 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -733,7 +1637,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 3.1.3: 3.1.3
 
-Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhajdu](https://github.com/szhajdu) on 2024/03/04 19:29:12 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16){:height="16" width="16"} szhajdu](https://github.com/szhajdu) on 2024/03/04 19:29:12 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -748,7 +1652,7 @@ Released by [![](https://avatars.githubusercontent.com/u/4129631?v=4&s=16) szhaj
 
 ### Codeception 5.1.1: 5.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/02/23 21:53:22 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/02/23 21:53:22 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -758,7 +1662,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-doctrine 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/02/17 22:38:06 / [Repository](https://github.com/Codeception/module-doctrine)   / [Releases](https://github.com/Codeception/module-doctrine/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/02/17 22:38:06 / [Repository](https://github.com/Codeception/module-doctrine)   / [Releases](https://github.com/Codeception/module-doctrine/releases)
 
 
 
@@ -771,7 +1675,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-webdriver 3.2.2: 3.2.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/02/16 14:01:34 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/02/16 14:01:34 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -782,7 +1686,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 4.0.1: 4.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/02/16 12:54:25 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/02/16 12:54:25 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -805,7 +1709,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-xml 1.0.3: 1.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/02/06 21:06:24 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/02/06 21:06:24 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
 
 
 
@@ -814,7 +1718,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-web 1.0.6: 1.0.6
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/02/06 20:50:54 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/02/06 20:50:54 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
 
 
 
@@ -825,7 +1729,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.1.0: 5.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/02/04 13:52:44 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/02/04 13:52:44 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -836,7 +1740,7 @@ Note: PHPUnit 11 does not support excluding files from code coverage report
 
 ### lib-innerbrowser 4.0.3: 4.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/02/02 20:37:41 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/02/02 20:37:41 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -845,7 +1749,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-web 1.0.5: 1.0.5
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2024/01/13 11:56:59 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2024/01/13 11:56:59 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
 
 
 
@@ -854,7 +1758,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 3.1.2: 3.1.2
 
-Released by [![](https://avatars.githubusercontent.com/u/1256298?v=4&s=16) sergeyklay](https://github.com/sergeyklay) on 2024/01/12 08:19:37 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/1256298?v=4&s=16){:height="16" width="16"} sergeyklay](https://github.com/sergeyklay) on 2024/01/12 08:19:37 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -869,7 +1773,7 @@ Released by [![](https://avatars.githubusercontent.com/u/1256298?v=4&s=16) serge
 
 ### module-symfony 3.3.0: 3.3.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/01/11 22:17:26 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/01/11 22:17:26 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -886,7 +1790,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-yii2 1.1.10: 1.1.10
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2024/01/10 05:57:11 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2024/01/10 05:57:11 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -896,7 +1800,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### module-symfony 3.2.0: 3.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2024/01/02 03:14:29 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2024/01/02 03:14:29 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -915,7 +1819,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### Codeception 5.0.13: 5.0.13
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/12/22 19:46:56 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/12/22 19:46:56 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -929,7 +1833,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phpbrowser 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/12/08 19:46:06 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/12/08 19:46:06 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -939,7 +1843,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-xml 1.0.2: 1.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/12/08 19:33:31 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/12/08 19:33:31 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
 
 
 
@@ -948,7 +1852,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-filesystem 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/12/08 19:24:04 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/12/08 19:24:04 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -957,7 +1861,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-web 1.0.4: 1.0.4
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/12/01 11:38:48 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/12/01 11:38:48 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
 
 
 
@@ -966,7 +1870,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 3.1.1: 3.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/12/01 11:34:57 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/12/01 11:34:57 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -976,7 +1880,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 4.0.2: 4.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/12/01 11:28:55 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/12/01 11:28:55 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -985,7 +1889,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-web 1.0.3: 1.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/11/27 06:43:46 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/11/27 06:43:46 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
 
 
 
@@ -995,7 +1899,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 4.0.1: 4.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/11/16 16:25:42 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/11/16 16:25:42 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -1005,7 +1909,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.12: 5.0.12
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/10/15 18:28:39 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/10/15 18:28:39 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1015,7 +1919,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-mezzio 4.0.2: 4.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/152236?v=4&s=16) Slamdunk](https://github.com/Slamdunk) on 2023/09/22 05:57:54 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/152236?v=4&s=16){:height="16" width="16"} Slamdunk](https://github.com/Slamdunk) on 2023/09/22 05:57:54 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -1030,7 +1934,7 @@ Released by [![](https://avatars.githubusercontent.com/u/152236?v=4&s=16) Slamdu
 
 ### Codeception 5.0.11: 5.0.11
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/08/22 06:53:38 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/08/22 06:53:38 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1050,7 +1954,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phalcon5 v2.0.1: v2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/1073784?v=4&s=16) niden](https://github.com/niden) on 2023/08/03 17:54:06 / [Repository](https://github.com/Codeception/module-phalcon5)   / [Releases](https://github.com/Codeception/module-phalcon5/releases)
+Released by [![](https://avatars.githubusercontent.com/u/1073784?v=4&s=16){:height="16" width="16"} niden](https://github.com/niden) on 2023/08/03 17:54:06 / [Repository](https://github.com/Codeception/module-phalcon5)   / [Releases](https://github.com/Codeception/module-phalcon5/releases)
 
 
 
@@ -1059,7 +1963,7 @@ Fixed getRawBody() return type [[#8](https://github.com/Codeception/module-phalc
 
 ### module-yii2 1.1.9: 1.1.9
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2023/06/16 03:52:10 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2023/06/16 03:52:10 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -1070,7 +1974,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### lib-web 1.0.2: 1.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/04/18 20:33:22 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/04/18 20:33:22 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
 
 
 
@@ -1079,7 +1983,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-doctrine2 3.0.3: 3.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/04/18 19:38:46 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/04/18 19:38:46 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -1088,7 +1992,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-doctrine2 3.0.2: 3.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/03/18 18:36:57 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/03/18 18:36:57 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -1097,7 +2001,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.10: 5.0.10
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/03/14 07:27:00 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/03/14 07:27:00 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1108,7 +2012,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 2.0.3: 2.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/03/10 19:24:26 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/03/10 19:24:26 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -1117,7 +2021,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.9: 5.0.9
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/11 14:42:09 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/11 14:42:09 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1129,7 +2033,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-yii2 1.1.8: 1.1.8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/10 18:54:49 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/10 18:54:49 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -1142,7 +2046,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 2.1.0: 2.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/10 18:37:43 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/10 18:37:43 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -1155,7 +2059,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 3.3.2: 3.3.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/09 18:16:01 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/09 18:16:01 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -1164,7 +2068,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-soap 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/09 07:08:01 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/09 07:08:01 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
 
 
 
@@ -1173,7 +2077,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-mezzio 4.0.1: 4.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:57:42 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:57:42 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -1182,7 +2086,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laravel 3.1.1: 3.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:44:51 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:44:51 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -1191,7 +2095,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-lumen 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:43:17 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:43:17 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
 
 
 
@@ -1200,7 +2104,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laminas 3.0.2: 3.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:36:25 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:36:25 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -1209,7 +2113,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 3.3.1: 3.3.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:26:47 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/09 06:26:47 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -1218,7 +2122,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-doctrine2 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/06 07:55:15 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/06 07:55:15 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -1227,7 +2131,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-symfony 3.1.1: 3.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/06 07:50:11 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/06 07:50:11 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -1236,7 +2140,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 4.0.0: 4.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/03 22:06:31 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/03 22:06:31 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1245,7 +2149,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.8: 5.0.8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/03 21:58:10 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/03 21:58:10 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1254,7 +2158,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 3.2.1: 3.2.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/03 21:48:22 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/03 21:48:22 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1263,7 +2167,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 4.0.0: 4.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/02/03 19:33:48 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/02/03 19:33:48 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -1272,7 +2176,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.7: 5.0.7
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/01/14 20:06:31 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/01/14 20:06:31 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1286,7 +2190,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-redis 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/01/13 21:20:53 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/01/13 21:20:53 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -1295,7 +2199,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-cli 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2023/01/13 18:58:12 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2023/01/13 18:58:12 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -1304,7 +2208,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.6: 5.0.6
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/12/28 14:20:04 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/12/28 14:20:04 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1317,7 +2221,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/12/03 10:23:12 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/12/03 10:23:12 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -1329,7 +2233,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 2.1.0: 2.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/12/03 10:22:30 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/12/03 10:22:30 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -1341,7 +2245,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.5: 5.0.5
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/11/20 11:33:41 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/11/20 11:33:41 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1353,7 +2257,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laminas 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/11/20 11:03:09 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/11/20 11:03:09 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -1363,7 +2267,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laravel 2.3.0: 2.3.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/11/19 20:34:50 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/11/19 20:34:50 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -1372,7 +2276,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laravel 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/11/19 20:32:53 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/11/19 20:32:53 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -1384,7 +2288,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.4: 5.0.4
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/10/30 19:21:03 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/10/30 19:21:03 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1398,7 +2302,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 3.2.0: 3.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/10/15 19:26:14 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/10/15 19:26:14 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1407,7 +2311,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 3.1.3: 3.1.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/10/03 15:36:06 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/10/03 15:36:06 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -1420,7 +2324,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.3: 5.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/09/30 15:48:28 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/09/30 15:48:28 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1434,7 +2338,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/09/27 06:20:36 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/09/27 06:20:36 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -1443,7 +2347,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 1.4.1: 1.4.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/09/12 05:29:45 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/09/12 05:29:45 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1452,7 +2356,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 2.0.4: 2.0.4
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/09/12 05:28:56 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/09/12 05:28:56 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1461,7 +2365,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 3.1.3: 3.1.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/09/12 04:57:16 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/09/12 04:57:16 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1472,7 +2376,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-xml 1.0.1: 1.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/09/11 14:13:11 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/09/11 14:13:11 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
 
 
 
@@ -1481,7 +2385,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 3.3.0: 3.3.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/08/22 07:11:50 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/08/22 07:11:50 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -1490,7 +2394,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.2: 5.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/08/20 18:24:07 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/08/20 18:24:07 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1501,7 +2405,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.1: 5.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/08/13 16:49:00 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/08/13 16:49:00 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1513,7 +2417,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 4.2.2: 4.2.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/08/13 13:56:22 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/08/13 13:56:22 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1523,7 +2427,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 3.2.0: 3.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/08/13 12:18:30 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/08/13 12:18:30 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -1533,7 +2437,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laravel 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2022/08/07 15:25:34 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2022/08/07 15:25:34 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -1542,7 +2446,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-phpbrowser 2.5.0: 2.5.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/08/06 13:44:12 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/08/06 13:44:12 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -1551,7 +2455,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.0: 5.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/07/28 08:41:10 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/07/28 08:41:10 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1620,7 +2524,7 @@ Summary of all differences from Codeception 4
 
 ### Codeception 5.0.0-RC8: 5.0.0-RC8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/07/28 08:25:46 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/07/28 08:25:46 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1631,7 +2535,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 3.1.2: 3.1.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/07/27 09:10:01 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/07/27 09:10:01 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1640,7 +2544,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 2.0.3: 2.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/07/27 09:08:02 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/07/27 09:08:02 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1649,7 +2553,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### Codeception 5.0.0-RC7: 5.0.0-RC7
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/07/22 05:52:09 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/07/22 05:52:09 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
 
 
 
@@ -1659,7 +2563,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-datafactory 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/07/18 16:39:04 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/07/18 16:39:04 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
 
 
 
@@ -1668,72 +2572,16 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-yii2 1.1.7: 1.1.7
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/07/15 18:10:54 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/07/15 18:10:54 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
 * Fix compatibility with Codeception 5.0.0-RC6 [#72](https://github.com/Codeception/module-yii2/issues/72) 
 
 
-### Codeception 5.0.0-RC6: 5.0.0-RC6
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/07/12 07:13:56 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
-
-
-
-* Added new attributes (Prepare, Env, BeforeClass,AfterClass, Given, When, Then)
-* Class level attributes are applied to all methods
-* Codeception attributes are supported in unit tests
-* Cest format can use data providers from other classes
-
-
-
-### Codeception 5.0.0-RC5: 5.0.0-RC5
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/06/28 06:42:39 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
-
-
-
-* Substitute invalid UTF-8 characters in debug and step output by **[SamoylenkoSU](https://github.com/SamoylenkoSU)** ([#6483](https://github.com/Codeception/Codeception/issues/6483))
-
-
-### Codeception 5.0.0-RC4: 5.0.0-RC4
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/06/22 07:03:20 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
-
-
-
-* Implemented basic attribute support ([#6449](https://github.com/Codeception/Codeception/issues/6449)) by **[DavertMik](https://github.com/DavertMik)**
-* Significantly reduced dependencies on PHPUnit
-* Replaced PHPUnit\Framework\TestResult with ResultAggregator
-* Added assertionCount method to ResultAggregator 
-* DotReporter prints standard result summary ([#6441](https://github.com/Codeception/Codeception/issues/6441)) by **[Orchestrator404](https://github.com/Orchestrator404)**
-* Fixed DotReporter output format
-* Fixed fetching remote code coverage data ([#6448](https://github.com/Codeception/Codeception/issues/6448))
-* Loading .env file must not override existing environment variables ([#6477](https://github.com/Codeception/Codeception/issues/6477))
-* All changes from 4.2.0 and 4.2.1:
-  * Improved multi-application experience, allow filtering suites by name ([#6435](https://github.com/Codeception/Codeception/issues/6435)) by **[calvinalkan](https://github.com/calvinalkan)**
-  * Configuration override is passed to included suites ([#5978](https://github.com/Codeception/Codeception/issues/5978)) by **[calvinalkan](https://github.com/calvinalkan)**
-  * Made dry-run command work with module methods having return types ([#6470](https://github.com/Codeception/Codeception/issues/6470))
-  * Support for expectError/Warning/Notice/Deprecation methods in unit tests (Requires PHPUnit 8.4+)
-  * Implemented new setting `convert_deprecations_to_exceptions` ([#6469](https://github.com/Codeception/Codeception/issues/6469))
-  * Action file generator: Do not return when return type is never ([#6462](https://github.com/Codeception/Codeception/issues/6462))
-  * Execute setupBeforeClass/tearDownAfterClass only once ([#6481](https://github.com/Codeception/Codeception/issues/6481))
-
-
-### Codeception 4.2.1: 4.2.1
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/06/22 06:26:08 / [Repository](https://github.com/Codeception/Codeception)   / [Releases](https://github.com/Codeception/Codeception/releases)
-
-
-
-* Execute setupBeforeClass/tearDownAfterClass only once ([#6481](https://github.com/Codeception/Codeception/issues/6481))
-* Handle action with intersection return type correctly in dry-run command
-
-
 ### module-yii2 1.1.6: 1.1.6
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2022/06/21 11:05:32 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2022/06/21 11:05:32 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -1744,7 +2592,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### module-phalcon5 v2.0.0: v2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/1073784?v=4&s=16) niden](https://github.com/niden) on 2022/06/03 15:20:26 / [Repository](https://github.com/Codeception/module-phalcon5)   / [Releases](https://github.com/Codeception/module-phalcon5/releases)
+Released by [![](https://avatars.githubusercontent.com/u/1073784?v=4&s=16){:height="16" width="16"} niden](https://github.com/niden) on 2022/06/03 15:20:26 / [Repository](https://github.com/Codeception/module-phalcon5)   / [Releases](https://github.com/Codeception/module-phalcon5/releases)
 
 
 
@@ -1758,7 +2606,7 @@ Supports PHP versions: 8.0, 8.1
 
 ### module-sequence 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/31 05:48:59 / [Repository](https://github.com/Codeception/module-sequence)   / [Releases](https://github.com/Codeception/module-sequence/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/31 05:48:59 / [Repository](https://github.com/Codeception/module-sequence)   / [Releases](https://github.com/Codeception/module-sequence/releases)
 
 
 
@@ -1767,7 +2615,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-queue 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/30 06:22:13 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/30 06:22:13 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
 
 
 
@@ -1776,7 +2624,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-queue 2.1.0: 2.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/30 06:18:31 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/30 06:18:31 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
 
 
 
@@ -1785,7 +2633,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-symfony 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2022/05/27 22:41:40 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2022/05/27 22:41:40 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -1798,7 +2646,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-mongodb 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/27 06:42:29 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/27 06:42:29 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
 
 
 
@@ -1807,7 +2655,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-memcache 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/27 05:49:34 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/27 05:49:34 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
 
 
 
@@ -1817,7 +2665,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-memcache 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/27 05:40:50 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/27 05:40:50 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
 
 
 
@@ -1826,7 +2674,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-ftp 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/26 05:55:16 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/26 05:55:16 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
 
 
 
@@ -1835,7 +2683,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-ftp 2.0.3: 2.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/26 05:52:13 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/26 05:52:13 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
 
 
 
@@ -1844,7 +2692,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-ftp 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/26 05:43:35 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/26 05:43:35 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
 
 
 
@@ -1856,7 +2704,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-apc 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/26 04:56:29 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/26 04:56:29 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
 
 
 
@@ -1867,7 +2715,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phpbrowser 1.0.3: 1.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/21 13:52:31 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/21 13:52:31 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -1876,7 +2724,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phpbrowser 2.0.3: 2.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/05/21 13:49:33 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/05/21 13:49:33 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -1885,7 +2733,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laravel 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/04/20 10:13:08 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/04/20 10:13:08 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -1895,7 +2743,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 3.1.2: 3.1.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/04/09 08:51:34 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/04/09 08:51:34 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -1905,7 +2753,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 3.1.1: 3.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/04/09 08:33:11 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/04/09 08:33:11 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1914,7 +2762,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-web 1.0.1: 1.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/04/09 08:19:47 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/04/09 08:19:47 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
 
 
 
@@ -1923,7 +2771,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/30 05:43:05 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/30 05:43:05 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -1932,7 +2780,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-lumen 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/29 18:00:52 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/29 18:00:52 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
 
 
 
@@ -1941,7 +2789,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phpbrowser 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/20 09:45:52 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/20 09:45:52 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -1950,7 +2798,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-amqp 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/20 09:26:33 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/20 09:26:33 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
 
 
 
@@ -1959,7 +2807,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-symfony 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/16 08:53:07 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/16 08:53:07 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -1968,7 +2816,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-filesystem 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/14 18:52:49 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/14 18:52:49 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -1977,7 +2825,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-filesystem 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/14 18:51:07 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/14 18:51:07 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -1986,7 +2834,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/11 17:08:21 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/11 17:08:21 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -1997,7 +2845,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-soap 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/11 16:39:18 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/11 16:39:18 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
 
 
 
@@ -2007,7 +2855,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/11 11:00:56 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/11 11:00:56 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2017,7 +2865,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 3.1.1: 3.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/11 10:36:11 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/11 10:36:11 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -2026,7 +2874,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 3.1.0: 3.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/11 10:18:41 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/11 10:18:41 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -2035,7 +2883,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-xml 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/11 10:04:52 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/11 10:04:52 / [Repository](https://github.com/Codeception/lib-xml)   / [Releases](https://github.com/Codeception/lib-xml/releases)
 
 
 
@@ -2044,7 +2892,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-web 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/11 08:38:48 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/11 08:38:48 / [Repository](https://github.com/Codeception/lib-web)   / [Releases](https://github.com/Codeception/lib-web/releases)
 
 
 
@@ -2053,7 +2901,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/06 10:41:21 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/06 10:41:21 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -2062,7 +2910,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 1.2.0: 1.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/05 19:47:19 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/05 19:47:19 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -2072,7 +2920,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/05 19:36:19 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/05 19:36:19 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -2082,7 +2930,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/03/05 19:29:02 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/03/05 19:29:02 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -2092,7 +2940,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-redis 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 17:41:06 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 17:41:06 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -2101,7 +2949,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 1.1.1: 1.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 17:06:05 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 17:06:05 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -2110,7 +2958,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 17:05:36 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 17:05:36 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -2119,7 +2967,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 17:03:37 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 17:03:37 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -2128,7 +2976,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-mezzio 4.0.0: 4.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 16:38:14 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 16:38:14 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -2137,7 +2985,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 16:32:01 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 16:32:01 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2146,7 +2994,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 16:31:03 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 16:31:03 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -2155,7 +3003,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laminas 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 15:37:34 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 15:37:34 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -2164,7 +3012,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-asserts 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 10:53:01 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 10:53:01 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -2173,7 +3021,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-doctrine2 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 10:51:03 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 10:51:03 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -2182,7 +3030,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/20 10:50:18 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/20 10:50:18 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2192,7 +3040,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/02/19 18:36:23 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/02/19 18:36:23 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -2201,7 +3049,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2022/02/01 17:42:05 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2022/02/01 17:42:05 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -2214,7 +3062,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-doctrine2 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/01/28 18:34:39 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/01/28 18:34:39 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -2223,7 +3071,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/01/23 12:00:55 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/01/23 12:00:55 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -2233,7 +3081,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-yii2 1.1.5: 1.1.5
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2022/01/10 10:29:36 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2022/01/10 10:29:36 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -2245,7 +3093,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### module-soap 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2022/01/06 17:03:47 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2022/01/06 17:03:47 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
 
 
 
@@ -2254,7 +3102,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/12/29 16:57:38 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/12/29 16:57:38 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -2266,7 +3114,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-mezzio 3.0.2: 3.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/12/26 17:51:01 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/12/26 17:51:01 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -2275,7 +3123,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-lumen 2.1.0: 2.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/24 20:16:08 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/24 20:16:08 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
 
 
 
@@ -2289,7 +3137,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-laravel 2.2.0: 2.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/24 20:11:04 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/24 20:11:04 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -2302,7 +3150,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-rest 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/24 14:32:30 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/24 14:32:30 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2312,7 +3160,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-phpbrowser 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/21 15:23:57 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/21 15:23:57 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -2321,7 +3169,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### lib-innerbrowser 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/21 02:04:00 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/21 02:04:00 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -2330,7 +3178,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-redis 1.4.1: 1.4.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/21 02:02:03 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/21 02:02:03 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -2339,7 +3187,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-asserts 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 17:11:54 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 17:11:54 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -2351,7 +3199,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-ftp 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 15:18:57 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 15:18:57 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
 
 
 
@@ -2362,7 +3210,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-symfony 2.1.1: 2.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:41:02 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:41:02 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -2373,7 +3221,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-laminas 1.3.1: 1.3.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:39:53 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:39:53 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -2384,7 +3232,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-soap 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:37:02 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:37:02 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
 
 
 
@@ -2395,7 +3243,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-phpbrowser 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:26:57 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:26:57 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -2404,7 +3252,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-mezzio 3.0.1: 3.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:26:02 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:26:02 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -2415,7 +3263,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-filesystem 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:24:07 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/18 14:24:07 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -2426,7 +3274,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### lib-asserts 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/17 15:50:24 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/17 15:50:24 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -2440,7 +3288,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-phalcon5 v1.0.1: v1.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/1073784?v=4&s=16) niden](https://github.com/niden) on 2021/12/16 13:04:49 / [Repository](https://github.com/Codeception/module-phalcon5)   / [Releases](https://github.com/Codeception/module-phalcon5/releases)
+Released by [![](https://avatars.githubusercontent.com/u/1073784?v=4&s=16){:height="16" width="16"} niden](https://github.com/niden) on 2021/12/16 13:04:49 / [Repository](https://github.com/Codeception/module-phalcon5)   / [Releases](https://github.com/Codeception/module-phalcon5/releases)
 
 
 
@@ -2449,7 +3297,7 @@ Corrections for Packagist descriptions and PHP minimum version
 
 ### module-phalcon5 v1.0.0: v1.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/1073784?v=4&s=16) niden](https://github.com/niden) on 2021/12/15 18:51:06 / [Repository](https://github.com/Codeception/module-phalcon5)   / [Releases](https://github.com/Codeception/module-phalcon5/releases)
+Released by [![](https://avatars.githubusercontent.com/u/1073784?v=4&s=16){:height="16" width="16"} niden](https://github.com/niden) on 2021/12/15 18:51:06 / [Repository](https://github.com/Codeception/module-phalcon5)   / [Releases](https://github.com/Codeception/module-phalcon5/releases)
 
 
 
@@ -2458,7 +3306,7 @@ Initial release of the Codeception module for Phalcon 5.
 
 ### module-redis 1.4.0: 1.4.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/12/13 06:06:22 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/12/13 06:06:22 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -2467,7 +3315,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-symfony 2.1.0: 2.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 15:18:21 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 15:18:21 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -2491,7 +3339,7 @@ By **[ThomasLandauer](https://github.com/ThomasLandauer)**:
 
 ### module-asserts 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 15:06:26 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 15:06:26 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -2508,7 +3356,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-datafactory 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 15:00:26 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 15:00:26 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
 
 
 
@@ -2525,7 +3373,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-mongodb 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:55:38 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:55:38 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
 
 
 
@@ -2540,7 +3388,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-sequence 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:36:31 / [Repository](https://github.com/Codeception/module-sequence)   / [Releases](https://github.com/Codeception/module-sequence/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:36:31 / [Repository](https://github.com/Codeception/module-sequence)   / [Releases](https://github.com/Codeception/module-sequence/releases)
 
 
 
@@ -2556,7 +3404,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-webdriver 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:34:27 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:34:27 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -2571,7 +3419,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-redis 1.3.0: 1.3.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:25:54 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:25:54 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -2586,7 +3434,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-queue 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:20:38 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:20:38 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
 
 
 
@@ -2602,7 +3450,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-memcache 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:17:46 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 14:17:46 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
 
 
 
@@ -2619,7 +3467,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-filesystem 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 13:37:45 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 13:37:45 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -2637,7 +3485,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-ftp 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 13:32:34 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 13:32:34 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
 
 
 
@@ -2652,7 +3500,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-cli 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 06:11:12 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 06:11:12 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -2668,7 +3516,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-mezzio 3.0.0: 3.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 06:04:58 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 06:04:58 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -2684,7 +3532,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-doctrine2 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:59:34 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:59:34 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -2704,7 +3552,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-apc 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:51:33 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:51:33 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
 
 
 
@@ -2719,7 +3567,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-amqp 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:47:28 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:47:28 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
 
 
 
@@ -2733,7 +3581,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-laminas 1.3.0: 1.3.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:44:00 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:44:00 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -2747,7 +3595,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-db 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:38:52 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:38:52 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -2763,7 +3611,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-soap 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:35:42 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:35:42 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
 
 
 
@@ -2778,7 +3626,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-rest 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:27:57 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:27:57 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2792,7 +3640,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-phpbrowser 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:24:45 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:24:45 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -2808,7 +3656,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### lib-innerbrowser 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:16:00 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/12/07 05:16:00 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -2823,7 +3671,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-yii2 1.1.4: 1.1.4
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2021/11/26 05:58:14 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2021/11/26 05:58:14 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -2832,7 +3680,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### module-rest 1.4.2: Added JSON check to `AsJson`
 
-Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16) DavertMik](https://github.com/DavertMik) on 2021/11/18 19:12:32 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16){:height="16" width="16"} DavertMik](https://github.com/DavertMik) on 2021/11/18 19:12:32 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2841,7 +3689,7 @@ Added `seeResponseIsJson()` to `send*AsJson` actions
 
 ### module-rest 1.4.1: AsJson Step Decorator
 
-Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16) DavertMik](https://github.com/DavertMik) on 2021/11/17 12:52:07 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16){:height="16" width="16"} DavertMik](https://github.com/DavertMik) on 2021/11/17 12:52:07 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2884,7 +3732,7 @@ $I->assertEquals(1, $user['id'])
 
 ### module-rest 1.4.0: return response on send* actions
 
-Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16) DavertMik](https://github.com/DavertMik) on 2021/11/17 10:52:08 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16){:height="16" width="16"} DavertMik](https://github.com/DavertMik) on 2021/11/17 10:52:08 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2902,7 +3750,7 @@ $response = $I->send('PATCH','/users/1', ['name' => 'jon']);
 
 ### module-laminas 1.2.1: 1.2.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/10/19 17:56:16 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/10/19 17:56:16 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -2911,7 +3759,7 @@ Fix incorrect type hint ([#19](https://github.com/Codeception/module-laminas/iss
 
 ### module-laminas 1.2.0: addFactoryToContainer
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/10/16 08:01:31 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/10/16 08:01:31 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -2920,7 +3768,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-redis 1.2.0: 1.2.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/10/08 15:41:43 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/10/08 15:41:43 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -2934,7 +3782,7 @@ Other minor changes:
 
 ### module-rest 1.3.2: 1.3.2
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/10/08 09:37:07 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/10/08 09:37:07 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -2943,7 +3791,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laminas 1.1.0: 1.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/10/06 00:34:16 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/10/06 00:34:16 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -2955,7 +3803,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-laravel 2.1.0: 2.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/09/10 05:09:10 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/09/10 05:09:10 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -2983,7 +3831,7 @@ See the full list of changes [here](https://github.com/Codeception/module-larave
 
 ### module-amqp 1.1.1: seeMessageInQueueContainsText acks message
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/09/05 07:47:08 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/09/05 07:47:08 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
 
 
 
@@ -2992,7 +3840,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 1.4.0: Added new methods
 
-Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16) DavertMik](https://github.com/DavertMik) on 2021/09/02 12:08:19 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16){:height="16" width="16"} DavertMik](https://github.com/DavertMik) on 2021/09/02 12:08:19 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3016,7 +3864,7 @@ $I->seeNumberOfTabs(2);
 
 ### lib-innerbrowser 1.5.1: 1.5.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/08/30 15:40:07 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/08/30 15:40:07 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3026,7 +3874,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-webdriver 1.3.0: Add new option webdriver_proxy
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/08/22 07:22:29 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/08/22 07:22:29 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3035,7 +3883,7 @@ Add new option webdriver_proxy to tunnel requests to the remote WebDriver server
 
 ### module-webdriver 1.2.2: Documentation update
 
-Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16) DavertMik](https://github.com/DavertMik) on 2021/08/19 11:16:42 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16){:height="16" width="16"} DavertMik](https://github.com/DavertMik) on 2021/08/19 11:16:42 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3044,7 +3892,7 @@ Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16) Davert
 
 ### module-laravel 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/08/02 15:51:15 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/08/02 15:51:15 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -3055,7 +3903,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-symfony 2.0.5: 2.0.5
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/07/07 01:17:57 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/07/07 01:17:57 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -3075,7 +3923,7 @@ Added assertions for Symfony Mime component ([#139](https://github.com/Codecepti
 
 ### module-symfony 2.0.4: 2.0.4
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/06/07 06:16:58 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/06/07 06:16:58 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -3089,7 +3937,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-symfony 2.0.3: 2.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/06/01 01:51:37 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/06/01 01:51:37 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -3099,7 +3947,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-yii2 1.1.3: 1.1.3
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2021/05/24 20:06:33 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2021/05/24 20:06:33 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -3108,7 +3956,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### module-phalcon4 v1.0.7: v1.0.7
 
-Released by [![](https://avatars.githubusercontent.com/u/3289702?v=4&s=16) Jeckerson](https://github.com/Jeckerson) on 2021/05/18 18:21:15 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
+Released by [![](https://avatars.githubusercontent.com/u/3289702?v=4&s=16){:height="16" width="16"} Jeckerson](https://github.com/Jeckerson) on 2021/05/18 18:21:15 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
 
 
 
@@ -3122,7 +3970,7 @@ Updated code base to PHP 7.2 ([#14](https://github.com/Codeception/module-phalco
 
 ### module-lumen 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/04/29 14:24:58 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/04/29 14:24:58 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
 
 
 
@@ -3132,7 +3980,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-webdriver 1.2.1: Documentation update
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/04/23 17:31:52 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/04/23 17:31:52 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3141,7 +3989,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 1.3.1: DELETE  method sends request body
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/04/23 09:02:05 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/04/23 09:02:05 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3150,7 +3998,7 @@ Revert change implemented in 1.3.0
 
 ### lib-innerbrowser 1.5.0: Hidden field, delete requests, code quality
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/04/23 07:01:58 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/04/23 07:01:58 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3161,7 +4009,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-symfony 2.0.2: 2.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/04/16 13:39:49 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/04/16 13:39:49 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -3174,7 +4022,7 @@ Documentation changes by **[ThomasLandauer](https://github.com/ThomasLandauer)**
 
 ### module-phalcon4 v1.0.6: v1.0.6
 
-Released by [![](https://avatars.githubusercontent.com/u/3289702?v=4&s=16) Jeckerson](https://github.com/Jeckerson) on 2021/04/13 21:30:04 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
+Released by [![](https://avatars.githubusercontent.com/u/3289702?v=4&s=16){:height="16" width="16"} Jeckerson](https://github.com/Jeckerson) on 2021/04/13 21:30:04 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
 
 
 
@@ -3183,7 +4031,7 @@ Released by [![](https://avatars.githubusercontent.com/u/3289702?v=4&s=16) Jecke
 
 ### module-rest 1.3.0: 1.3.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/04/08 08:28:48 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/04/08 08:28:48 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3196,7 +4044,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 1.4.2: Don't set request body for DELETE and OPTIONS requests
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/04/06 05:29:20 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/04/06 05:29:20 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3205,7 +4053,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-redis 1.1.0: Allow more parameters to be sent to Predis Client
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/03/31 16:04:36 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/03/31 16:04:36 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -3214,7 +4062,7 @@ See [#6](https://github.com/Codeception/module-redis/issues/6)
 
 ### module-symfony 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/03/28 15:48:38 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/03/28 15:48:38 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -3230,7 +4078,7 @@ Minor changes in documentation by **[ThomasLandauer](https://github.com/ThomasLa
 
 ### module-amqp 1.1.0: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/03/21 15:29:11 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/03/21 15:29:11 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
 
 
 
@@ -3240,7 +4088,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-datafactory 1.1.0: Added Custom Store
 
-Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16) DavertMik](https://github.com/DavertMik) on 2021/03/16 19:42:52 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
+Released by [![](https://avatars.githubusercontent.com/u/220264?v=4&s=16){:height="16" width="16"} DavertMik](https://github.com/DavertMik) on 2021/03/16 19:42:52 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
 
 
 
@@ -3249,7 +4097,7 @@ Custom Store can be used for Data Factory. See [#2](https://github.com/Codecepti
 
 ### lib-innerbrowser 1.4.1: Fix grabTextFrom TypeError
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/03/02 08:03:49 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/03/02 08:03:49 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3258,7 +4106,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 1.2.8: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/03/02 06:51:05 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/03/02 06:51:05 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3267,7 +4115,7 @@ Append query params to URL for HEAD requests
 
 ### module-symfony 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/02/12 22:31:22 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/02/12 22:31:22 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -3285,7 +4133,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-phalcon4 v1.0.5: v1.0.5
 
-Released by [![](https://avatars.githubusercontent.com/u/3289702?v=4&s=16) Jeckerson](https://github.com/Jeckerson) on 2021/02/10 22:09:30 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
+Released by [![](https://avatars.githubusercontent.com/u/3289702?v=4&s=16){:height="16" width="16"} Jeckerson](https://github.com/Jeckerson) on 2021/02/10 22:09:30 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
 
 
 
@@ -3295,7 +4143,7 @@ Changed
 
 ### lib-innerbrowser 1.4.0: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/01/29 18:19:08 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/01/29 18:19:08 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3304,7 +4152,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-lumen 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2021/01/19 05:02:29 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2021/01/19 05:02:29 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
 
 
 
@@ -3323,7 +4171,7 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 
 ### module-webdriver 1.2.0: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/01/17 19:30:29 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/01/17 19:30:29 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3333,7 +4181,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 1.3.6: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/01/17 11:25:06 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/01/17 11:25:06 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3343,7 +4191,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phalcon 1.1.0: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/01/16 12:03:45 / [Repository](https://github.com/Codeception/module-phalcon)   / [Releases](https://github.com/Codeception/module-phalcon/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/01/16 12:03:45 / [Repository](https://github.com/Codeception/module-phalcon)   / [Releases](https://github.com/Codeception/module-phalcon/releases)
 
 
 
@@ -3353,7 +4201,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 1.3.5: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2021/01/02 19:01:35 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2021/01/02 19:01:35 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3362,7 +4210,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-datafactory 1.0.1: PHP8 support
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/12/30 15:56:46 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/12/30 15:56:46 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
 
 
 
@@ -3371,7 +4219,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laravel 2.0.0: 2.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/12/29 20:52:27 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2020/12/29 20:52:27 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -3401,7 +4249,7 @@ If you're interested in contributing to this module and didn't know where to sta
 
 ### module-yii2 1.1.2: 1.1.2
 
-Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark](https://github.com/samdark) on 2020/12/28 11:32:21 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16){:height="16" width="16"} samdark](https://github.com/samdark) on 2020/12/28 11:32:21 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -3412,7 +4260,7 @@ Released by [![](https://avatars.githubusercontent.com/u/47294?v=4&s=16) samdark
 
 ### module-cli 1.1.1: Preparation for PHPUnit 10
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/12/26 16:58:43 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/12/26 16:58:43 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -3421,7 +4269,7 @@ Use wrapper for assertRegExp method
 
 ### module-laravel 1.1.2: 1.1.2
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/12/26 15:43:02 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2020/12/26 15:43:02 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -3430,7 +4278,7 @@ Update project name to `module-laravel` ([#4](https://github.com/Codeception/mod
 
 ### module-laravel 1.1.1: 1.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/12/26 14:18:48 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2020/12/26 14:18:48 / [Repository](https://github.com/Codeception/module-laravel)   / [Releases](https://github.com/Codeception/module-laravel/releases)
 
 
 
@@ -3439,7 +4287,7 @@ Support PHP 8 *(Depends on Laravel libraries actually supporting PHP 8)* by **[N
 
 ### module-symfony 1.6.0: 1.6.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/12/20 16:52:03 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2020/12/20 16:52:03 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -3461,7 +4309,7 @@ If you're interested in contributing to this module and didn't know where to sta
 
 ### module-db 1.1.0: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/12/20 13:38:20 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/12/20 13:38:20 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -3470,7 +4318,7 @@ Add support for IS NOT NULL in database assertions [#12](https://github.com/Code
 
 ### module-symfony 1.5.0: 1.5.0
 
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/12/11 20:50:16 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16){:height="16" width="16"} TavoNiievez](https://github.com/TavoNiievez) on 2020/12/11 20:50:16 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
 
 
 
@@ -3493,21 +4341,9 @@ Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) Tavo
 > Minor logical change in [#74](https://github.com/Codeception/module-symfony/issues/74).
 
 
-### module-symfony 1.4.2: 1.4.2
-
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/11/26 12:56:36 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
-
-
-
-* Support PHP 8 by **[Naktibalda](https://github.com/Naktibalda)** 
-
-> Minor non-logical changes in [#57](https://github.com/Codeception/module-symfony/issues/57) and [#62](https://github.com/Codeception/module-symfony/issues/62).
-
-
-
 ### module-mongodb 1.1.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/26 07:20:07 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/26 07:20:07 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
 
 
 
@@ -3516,25 +4352,16 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-doctrine2 1.1.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/26 06:57:10 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/26 06:57:10 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
 
-
-
-### module-symfony 1.4.1: 1.4.1
-
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/11/25 19:31:47 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
-
-
-
-* Minor logic fixes ([#58](https://github.com/Codeception/module-symfony/issues/58)), ([#59](https://github.com/Codeception/module-symfony/issues/59)), and ([#60](https://github.com/Codeception/module-symfony/issues/60)) by **[TavoNiievez](https://github.com/TavoNiievez)** 
 
 
 ### module-laminas 1.0.0: First release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/25 07:58:15 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/25 07:58:15 / [Repository](https://github.com/Codeception/module-laminas)   / [Releases](https://github.com/Codeception/module-laminas/releases)
 
 
 
@@ -3544,7 +4371,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-mezzio 2.0.2: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/25 07:15:31 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/25 07:15:31 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -3553,52 +4380,16 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-redis 1.0.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/25 06:44:01 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/25 06:44:01 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
 
-
-
-### module-symfony 1.4.0: 1.4.0
-
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/11/24 16:56:31 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
-
-
-
-* New methods by **[TavoNiievez](https://github.com/TavoNiievez)**:
-  * seeFormErrorMessage ([#50](https://github.com/Codeception/module-symfony/issues/50))
-  * dontSeeFormErrors function ([#49](https://github.com/Codeception/module-symfony/issues/49))
-  * seeFormHasErrors function ([#48](https://github.com/Codeception/module-symfony/issues/48))
-
-* Minor logic fixes ([#51](https://github.com/Codeception/module-symfony/issues/51)), ([#47](https://github.com/Codeception/module-symfony/issues/47)), ([#44](https://github.com/Codeception/module-symfony/issues/44)), ([#41](https://github.com/Codeception/module-symfony/issues/41)) and ([#56](https://github.com/Codeception/module-symfony/issues/56)).
-
-
-### module-symfony 1.3.0: 1.3.0
-
-Released by [![](https://avatars.githubusercontent.com/u/64917965?v=4&s=16) TavoNiievez](https://github.com/TavoNiievez) on 2020/11/16 16:52:18 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
-
-
-
-* New methods by **[TavoNiievez](https://github.com/TavoNiievez)**:
-  * grabRepository ([#27](https://github.com/Codeception/module-symfony/issues/27))
-  * seeUserPasswordDoesNotNeedRehash ([#29](https://github.com/Codeception/module-symfony/issues/29))
-  * grabParameter ([#30](https://github.com/Codeception/module-symfony/issues/30))
-  * submitSymfonyForm ([#32](https://github.com/Codeception/module-symfony/issues/32))
-  * seePageIsAvailable ([#33](https://github.com/Codeception/module-symfony/issues/33))
-  * seePageRedirectsTo ([#33](https://github.com/Codeception/module-symfony/issues/33))
-
-* Supports vlucas/phpdotenv v5 ([#28](https://github.com/Codeception/module-symfony/issues/28))
-* Minor logic fixes ([#35](https://github.com/Codeception/module-symfony/issues/35)), ([#36](https://github.com/Codeception/module-symfony/issues/36)), ([#37](https://github.com/Codeception/module-symfony/issues/37)) and ([#38](https://github.com/Codeception/module-symfony/issues/38))
-
-* Improved documentation of the 'Parts' feature by **[ThomasLandauer](https://github.com/ThomasLandauer)** ([#40](https://github.com/Codeception/module-symfony/issues/40))
-
-* **BC**: Removed support for php 5.6 and Symfony 2.8 ([#39](https://github.com/Codeception/module-symfony/issues/39))
 
 
 ### module-webdriver 1.1.4: Documentation improvements
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/16 07:24:08 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/16 07:24:08 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3607,7 +4398,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-cli 1.1.0: Add grabShellOutput method
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/16 06:27:24 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/16 06:27:24 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -3616,7 +4407,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-doctrine2 1.1.0: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/14 20:44:32 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/14 20:44:32 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -3626,7 +4417,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-soap 1.0.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/07 20:10:24 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/07 20:10:24 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
 
 
 
@@ -3635,7 +4426,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 1.2.7: Fix deprecation error
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/04 17:06:31 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/04 17:06:31 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3644,7 +4435,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 1.2.6: softcreatr/jsonpath
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/11/03 07:11:13 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/11/03 07:11:13 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3653,7 +4444,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-queue 1.1.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/31 19:08:59 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/31 19:08:59 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
 
 
 
@@ -3662,37 +4453,16 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-sequence 1.0.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/31 19:03:32 / [Repository](https://github.com/Codeception/module-sequence)   / [Releases](https://github.com/Codeception/module-sequence/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/31 19:03:32 / [Repository](https://github.com/Codeception/module-sequence)   / [Releases](https://github.com/Codeception/module-sequence/releases)
 
 
 
 
-
-
-### module-symfony 1.2.0: 1.2.0
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/31 18:41:28 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
-
-
-
-* New methods by **[TavoNiievez](https://github.com/TavoNiievez)**:
-  * amLoggedInAs
-  * logout
-  * seeInSession
-  * seeAuthentication
-  * dontSeeAuthentication
-  * seeUserHasRole 
-  * amOnAction
-  * seeCurrentActionIs
-  * seeNumRecords
-
-* Supports vlucas/phpdotenv ^3.6 and  ^4.1
-* Improved description and error messages of grabService and seeEmailIsSent by **[ThomasLandauer](https://github.com/ThomasLandauer)**
 
 
 ### module-memcache 1.0.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/28 13:30:19 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/28 13:30:19 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
 
 
 
@@ -3701,7 +4471,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-lumen 1.0.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/28 07:48:01 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/28 07:48:01 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
 
 
 
@@ -3710,7 +4480,7 @@ Depends on Lumen libraries actually supporting PHP 8
 
 ### module-laravel5 1.1.1: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/28 07:06:39 / [Repository](https://github.com/Codeception/module-laravel5)   / [Releases](https://github.com/Codeception/module-laravel5/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/28 07:06:39 / [Repository](https://github.com/Codeception/module-laravel5)   / [Releases](https://github.com/Codeception/module-laravel5/releases)
 
 
 
@@ -3719,7 +4489,7 @@ Depends on Laravel libraries actually supporting PHP 8
 
 ### module-ftp 1.0.2: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/27 06:39:25 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/27 06:39:25 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
 
 
 
@@ -3728,7 +4498,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-apc 1.0.2: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/26 06:16:30 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/26 06:16:30 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
 
 
 
@@ -3737,7 +4507,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 1.1.3: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/24 15:41:47 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/24 15:41:47 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3746,7 +4516,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phpbrowser 1.0.2: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/24 15:29:51 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/24 15:29:51 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -3755,7 +4525,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 1.2.5: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/24 15:22:52 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/24 15:22:52 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3764,7 +4534,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-filesystem 1.0.3: PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/24 14:50:10 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/24 14:50:10 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -3775,7 +4545,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 1.0.2: PHP8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/23 18:22:43 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/23 18:22:43 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -3785,7 +4555,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-cli 1.0.4: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/23 17:52:08 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/23 17:52:08 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -3795,7 +4565,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 1.3.4: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/22 06:23:10 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/22 06:23:10 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3804,7 +4574,7 @@ No code changes
 
 ### module-asserts 1.3.1: PHP8 support
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/21 16:49:39 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/21 16:49:39 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -3814,7 +4584,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 1.13.2: Support PHP 8
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/21 16:27:49 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/21 16:27:49 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -3823,7 +4593,7 @@ No code changes
 
 ### lib-innerbrowser 1.3.3: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/11 19:05:11 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/11 19:05:11 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3833,7 +4603,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 1.1.2: Documentation improvements
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/11 18:55:38 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/11 18:55:38 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3842,7 +4612,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 1.2.4: Documentation improvements
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/11 18:39:31 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/11 18:39:31 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3851,7 +4621,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-cli 1.0.3: Documentation improvements
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/10/11 18:35:08 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/10/11 18:35:08 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -3860,7 +4630,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 1.2.3: amNTLMAuthenticated supports Guzzle 7
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/09/17 13:38:02 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/09/17 13:38:02 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3869,7 +4639,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-asserts 1.3.0: Support for full PHPUnit public API
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/08/28 08:10:16 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/08/28 08:10:16 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -3878,7 +4648,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 1.13.1: Fix methods broken by 1.13.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/08/28 07:50:06 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/08/28 07:50:06 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -3887,25 +4657,16 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 1.13.0: Support for full PHPUnit public API
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/08/28 07:08:53 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/08/28 07:08:53 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
 [#5](https://github.com/Codeception/lib-asserts/issues/5) by **[TavoNiievez](https://github.com/TavoNiievez)** 
 
 
-### module-symfony 1.1.1: Fixed seeEmailIsSent 
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/08/28 07:06:19 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
-
-
-
-[#9](https://github.com/Codeception/module-symfony/issues/9) by **[ThomasLandauer](https://github.com/ThomasLandauer)** and **[TavoNiievez](https://github.com/TavoNiievez)** 
-
-
 ### module-webdriver 1.1.1: Multibyte characters are allowed in build artefact filenames
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/08/28 07:01:59 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/08/28 07:01:59 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
@@ -3914,7 +4675,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-rest 1.2.2: JsonType improvements
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/08/28 06:58:51 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/08/28 06:58:51 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3924,7 +4685,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-yii2 1.1.1: 1.1.1
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/08/28 06:53:33 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/08/28 06:53:33 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -3935,7 +4696,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phalcon4 v1.0.4: v1.0.4
 
-Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16) ruudboon](https://github.com/ruudboon) on 2020/08/26 09:34:29 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
+Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16){:height="16" width="16"} ruudboon](https://github.com/ruudboon) on 2020/08/26 09:34:29 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
 
 
 
@@ -3945,7 +4706,7 @@ Fixed
 
 ### module-rest 1.2.1: Documentation updates
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/07/05 15:46:13 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/07/05 15:46:13 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -3954,7 +4715,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phpbrowser 1.0.1: Support Guzzle 7.x
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/07/05 15:35:51 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/07/05 15:35:51 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -3963,7 +4724,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-innerbrowser 1.3.2: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/07/05 14:22:41 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/07/05 14:22:41 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
 
 
 
@@ -3973,25 +4734,16 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-webdriver 1.1.0: switchToFrame
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/05/31 08:52:02 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/05/31 08:52:02 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
 
 
 
 * Introduced switchToFrame method [#9](https://github.com/Codeception/module-webdriver/issues/9) 
 
 
-### module-webdriver 1.0.8: Suppress UnknownErrorException in _closeSession
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/04/29 13:52:51 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
-
-
-
-* Suppress UnknownErrorException in _closeSession [#15](https://github.com/Codeception/module-webdriver/issues/15) 
-
-
 ### module-asserts 1.2.1: Require lib-asserts 1.12+
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/04/20 07:28:56 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/04/20 07:28:56 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -4000,7 +4752,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-asserts 1.2.0: New assertions
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/04/18 10:03:04 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/04/18 10:03:04 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -4014,7 +4766,7 @@ They were introduced in PHPUnit 9 to replace older method names, but Asserts mod
 
 ### lib-asserts 1.12.0: PHPUnit 9 Deprecations
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/04/17 18:22:35 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/04/17 18:22:35 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -4032,27 +4784,9 @@ This version depends on phpunit-wrapper and works with PHPUnit 5 - 9,
 codeception-5 branch can be revived when we actually have Codeception 5.
 
 
-### module-symfony 1.1.0: runSymfonyConsoleCommand 
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/04/05 14:11:53 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
-
-
-
-* runSymfonyConsoleCommand works with arguments, options and also console input
-
-
-### module-webdriver 1.0.7: [switchToIFrame] fixed Undefined variable: els error
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/04/01 10:19:18 / [Repository](https://github.com/Codeception/module-webdriver)   / [Releases](https://github.com/Codeception/module-webdriver/releases)
-
-
-
-
-
-
 ### module-mongodb 1.1.0: Cleanup: dirty
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/04/01 09:22:36 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/04/01 09:22:36 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
 
 
 
@@ -4061,7 +4795,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laravel5 1.1.0: Compatibility with Laravel 7
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/03/28 15:01:29 / [Repository](https://github.com/Codeception/module-laravel5)   / [Releases](https://github.com/Codeception/module-laravel5/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/03/28 15:01:29 / [Repository](https://github.com/Codeception/module-laravel5)   / [Releases](https://github.com/Codeception/module-laravel5/releases)
 
 
 
@@ -4071,7 +4805,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-mezzio 2.0.1: 2.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/152236?v=4&s=16) Slamdunk](https://github.com/Slamdunk) on 2020/03/17 11:14:58 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/152236?v=4&s=16){:height="16" width="16"} Slamdunk](https://github.com/Slamdunk) on 2020/03/17 11:14:58 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -4084,7 +4818,7 @@ Released by [![](https://avatars.githubusercontent.com/u/152236?v=4&s=16) Slamdu
 
 ### module-mezzio 2.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/03/06 08:25:48 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/03/06 08:25:48 / [Repository](https://github.com/Codeception/module-mezzio)   / [Releases](https://github.com/Codeception/module-mezzio/releases)
 
 
 
@@ -4093,25 +4827,16 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-ftp 1.0.1: Fixed Filename cannot be empty error when SFTP key is not specified
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/02/29 14:55:56 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/02/29 14:55:56 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
 
 
 
 
-
-
-### lib-innerbrowser 1.3.1: PHPUnit9 compatibility
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/02/20 14:52:13 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
-
-
-
-* proceedSeeInField casts value to string before comparison
 
 
 ### lib-asserts 1.11.0: Support PHPUnit 9
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/02/11 10:46:55 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/02/11 10:46:55 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -4120,7 +4845,7 @@ This branch only works with PHPUnit 8.4 and 9 and doesn't depend on phpunit-wrap
 
 ### lib-asserts 1.2.0: Support PHPUnit 9.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/02/07 17:49:21 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/02/07 17:49:21 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -4129,7 +4854,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-cli 1.0.2: Fixed dontSeeInShellOutput for older versions of PHPUnit
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/02/07 17:34:52 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/02/07 17:34:52 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -4138,7 +4863,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-cli 1.0.1: Compatibility with PHPUnit 9
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/02/07 17:11:44 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/02/07 17:11:44 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -4147,7 +4872,7 @@ Use assertStringNotContainsString instead of assertNotContains in dontSeeInShell
 
 ### module-rest 1.2.0: Response validation using JsonSchema
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/02/01 19:29:49 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/02/01 19:29:49 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
 
 
 
@@ -4156,7 +4881,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-yii2 1.1.0: Module implements Codeception's MultiSession
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/02/01 19:26:08 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/02/01 19:26:08 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -4165,7 +4890,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-zf2 1.0.3: 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/01/29 15:19:36 / [Repository](https://github.com/Codeception/module-zf2)   / [Releases](https://github.com/Codeception/module-zf2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/01/29 15:19:36 / [Repository](https://github.com/Codeception/module-zf2)   / [Releases](https://github.com/Codeception/module-zf2/releases)
 
 
 
@@ -4175,34 +4900,16 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-queue 1.1.0: Implemented driver for Pheanstalk 4 
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/01/28 13:23:15 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/01/28 13:23:15 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
 
 
 
 
-
-
-### module-rest 1.1.0: Allow to add or remove server parameters
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/01/28 08:16:49 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
-
-
-
-[#7](https://github.com/Codeception/module-rest/issues/7) by **[svycka](https://github.com/svycka)** 
-
-
-### lib-innerbrowser 1.3.0: Allow to add or remove server parameters
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/01/27 09:33:02 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
-
-
-
-* [#5](https://github.com/Codeception/lib-innerbrowser/issues/5) by **[svycka](https://github.com/svycka)**
 
 
 ### module-zf2 1.0.2: Empty request content can't be null
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/01/23 17:55:51 / [Repository](https://github.com/Codeception/module-zf2)   / [Releases](https://github.com/Codeception/module-zf2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/01/23 17:55:51 / [Repository](https://github.com/Codeception/module-zf2)   / [Releases](https://github.com/Codeception/module-zf2/releases)
 
 
 
@@ -4211,7 +4918,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-zf2 1.0.1: Add Server parameters to ZendRequest
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/01/22 15:14:48 / [Repository](https://github.com/Codeception/module-zf2)   / [Releases](https://github.com/Codeception/module-zf2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/01/22 15:14:48 / [Repository](https://github.com/Codeception/module-zf2)   / [Releases](https://github.com/Codeception/module-zf2/releases)
 
 
 
@@ -4220,16 +4927,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-apc 1.0.1: Removed requirement for ext-apc from composer.json
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/01/21 07:45:14 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
-
-
-
-
-
-
-### module-rest 1.0.1: Updated flow/jsonpath library to 0.5
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2020/01/17 16:55:55 / [Repository](https://github.com/Codeception/module-rest)   / [Releases](https://github.com/Codeception/module-rest/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2020/01/21 07:45:14 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
 
 
 
@@ -4238,7 +4936,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phalcon4 1.0.3: v1.0.3
 
-Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16) ruudboon](https://github.com/ruudboon) on 2020/01/11 17:02:24 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
+Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16){:height="16" width="16"} ruudboon](https://github.com/ruudboon) on 2020/01/11 17:02:24 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
 
 
 
@@ -4248,7 +4946,7 @@ Fixed
 
 ### module-phalcon4 1.0.2: v1.0.2
 
-Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16) ruudboon](https://github.com/ruudboon) on 2020/01/07 12:32:16 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
+Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16){:height="16" width="16"} ruudboon](https://github.com/ruudboon) on 2020/01/07 12:32:16 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
 
 
 
@@ -4258,7 +4956,7 @@ Fixed
 
 ### module-phalcon4 1.0.1: v1.0.1
 
-Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16) ruudboon](https://github.com/ruudboon) on 2020/01/06 11:26:42 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
+Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16){:height="16" width="16"} ruudboon](https://github.com/ruudboon) on 2020/01/06 11:26:42 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
 
 
 
@@ -4270,7 +4968,7 @@ Updated DocBlocks
 
 ### module-phalcon4 1.0.0: v1.0.0
 
-Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16) ruudboon](https://github.com/ruudboon) on 2020/01/06 09:32:56 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
+Released by [![](https://avatars.githubusercontent.com/u/7444246?v=4&s=16){:height="16" width="16"} ruudboon](https://github.com/ruudboon) on 2020/01/06 09:32:56 / [Repository](https://github.com/Codeception/module-phalcon4)   / [Releases](https://github.com/Codeception/module-phalcon4/releases)
 
 
 
@@ -4279,7 +4977,7 @@ Initial release of the Codeception module for Phalcon 4.
 
 ### module-db 1.0.1: Mysql: use single quotes for string value in getPrimaryKey
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/12/08 18:03:36 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/12/08 18:03:36 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -4288,25 +4986,7 @@ Fixes some compatibility issue with MariaDB https://github.com/Codeception/Codec
 
 ### module-filesystem 1.0.2: Support symfony/finder 5
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/12/04 17:14:16 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
-
-
-
-
-
-
-### lib-innerbrowser 1.2.3: Symfony 5: catch another exception
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/26 16:50:50 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
-
-
-
-
-
-
-### lib-innerbrowser 1.2.2: Really fixed _failed handling with Symfony 5
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/24 16:43:52 / [Repository](https://github.com/Codeception/lib-innerbrowser)   / [Releases](https://github.com/Codeception/lib-innerbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/12/04 17:14:16 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -4315,7 +4995,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 1.10.1: rerelease
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/23 21:14:50 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/11/23 21:14:50 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -4324,7 +5004,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 1.10.0: Dropped dependency on phpunit-wrapper
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/23 20:28:22 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/11/23 20:28:22 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -4333,7 +5013,7 @@ Requires PHPUnit 8.4,  so this version can only be used on PHP 7.2+ and it is re
 
 ### module-doctrine2 1.0.1: Updated documentation
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/13 17:34:35 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/11/13 17:34:35 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -4342,7 +5022,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-asserts 1.1.1: Documented that stringEnds functions were added in 1.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/13 17:33:39 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/11/13 17:33:39 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -4351,7 +5031,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 1.1.1: Documented that stringEnds functions were added in 1.1.0
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/13 17:29:36 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/11/13 17:29:36 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -4360,7 +5040,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-asserts 1.1.0: Add assertStringEndsWith and assertStringEndsNotWith
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/12 16:47:30 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/11/12 16:47:30 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -4369,7 +5049,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 1.1.0: Added assertStringEndsWith and assertStringEndsNotWith
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/12 16:31:06 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/11/12 16:31:06 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 
@@ -4378,7 +5058,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-filesystem 1.0.1: Compatible with codeception/codeception releases and branches
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/11/09 20:33:00 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/11/09 20:33:00 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -4387,7 +5067,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-yii2 1.0.1: Use stable versions of codeception and innerbrowser
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/25 17:33:04 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/25 17:33:04 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -4396,16 +5076,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-yii2 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:29:42 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
-
-
-
-
-
-
-### module-symfony 1.0.0: Initial release
-
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:29:13 / [Repository](https://github.com/Codeception/module-symfony)   / [Releases](https://github.com/Codeception/module-symfony/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:29:42 / [Repository](https://github.com/Codeception/module-yii2)   / [Releases](https://github.com/Codeception/module-yii2/releases)
 
 
 
@@ -4414,7 +5085,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phpbrowser 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:28:32 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:28:32 / [Repository](https://github.com/Codeception/module-phpbrowser)   / [Releases](https://github.com/Codeception/module-phpbrowser/releases)
 
 
 
@@ -4423,7 +5094,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-lumen 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:27:37 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:27:37 / [Repository](https://github.com/Codeception/module-lumen)   / [Releases](https://github.com/Codeception/module-lumen/releases)
 
 
 
@@ -4432,7 +5103,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-laravel5 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:27:22 / [Repository](https://github.com/Codeception/module-laravel5)   / [Releases](https://github.com/Codeception/module-laravel5/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:27:22 / [Repository](https://github.com/Codeception/module-laravel5)   / [Releases](https://github.com/Codeception/module-laravel5/releases)
 
 
 
@@ -4441,7 +5112,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-doctrine2 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:27:12 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:27:12 / [Repository](https://github.com/Codeception/module-doctrine2)   / [Releases](https://github.com/Codeception/module-doctrine2/releases)
 
 
 
@@ -4450,7 +5121,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-db 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:27:01 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:27:01 / [Repository](https://github.com/Codeception/module-db)   / [Releases](https://github.com/Codeception/module-db/releases)
 
 
 
@@ -4459,7 +5130,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-phalcon 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:02:04 / [Repository](https://github.com/Codeception/module-phalcon)   / [Releases](https://github.com/Codeception/module-phalcon/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/19 15:02:04 / [Repository](https://github.com/Codeception/module-phalcon)   / [Releases](https://github.com/Codeception/module-phalcon/releases)
 
 
 
@@ -4469,7 +5140,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-zf2 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:24:38 / [Repository](https://github.com/Codeception/module-zf2)   / [Releases](https://github.com/Codeception/module-zf2/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:24:38 / [Repository](https://github.com/Codeception/module-zf2)   / [Releases](https://github.com/Codeception/module-zf2/releases)
 
 
 
@@ -4478,7 +5149,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-sequence 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:24:11 / [Repository](https://github.com/Codeception/module-sequence)   / [Releases](https://github.com/Codeception/module-sequence/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:24:11 / [Repository](https://github.com/Codeception/module-sequence)   / [Releases](https://github.com/Codeception/module-sequence/releases)
 
 
 
@@ -4487,7 +5158,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-soap 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:23:56 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:23:56 / [Repository](https://github.com/Codeception/module-soap)   / [Releases](https://github.com/Codeception/module-soap/releases)
 
 
 
@@ -4496,7 +5167,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-redis 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:23:43 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:23:43 / [Repository](https://github.com/Codeception/module-redis)   / [Releases](https://github.com/Codeception/module-redis/releases)
 
 
 
@@ -4505,7 +5176,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-queue 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:23:32 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:23:32 / [Repository](https://github.com/Codeception/module-queue)   / [Releases](https://github.com/Codeception/module-queue/releases)
 
 
 
@@ -4514,7 +5185,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-mongodb 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:21:41 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:21:41 / [Repository](https://github.com/Codeception/module-mongodb)   / [Releases](https://github.com/Codeception/module-mongodb/releases)
 
 
 
@@ -4523,7 +5194,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-memcache 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:21:22 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:21:22 / [Repository](https://github.com/Codeception/module-memcache)   / [Releases](https://github.com/Codeception/module-memcache/releases)
 
 
 
@@ -4532,7 +5203,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-filesystem 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:21:11 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:21:11 / [Repository](https://github.com/Codeception/module-filesystem)   / [Releases](https://github.com/Codeception/module-filesystem/releases)
 
 
 
@@ -4541,7 +5212,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-ftp 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:20:59 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:20:59 / [Repository](https://github.com/Codeception/module-ftp)   / [Releases](https://github.com/Codeception/module-ftp/releases)
 
 
 
@@ -4550,7 +5221,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-datafactory 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:07:51 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:07:51 / [Repository](https://github.com/Codeception/module-datafactory)   / [Releases](https://github.com/Codeception/module-datafactory/releases)
 
 
 
@@ -4559,7 +5230,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-cli 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:07:08 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:07:08 / [Repository](https://github.com/Codeception/module-cli)   / [Releases](https://github.com/Codeception/module-cli/releases)
 
 
 
@@ -4568,7 +5239,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-asserts 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:06:52 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:06:52 / [Repository](https://github.com/Codeception/module-asserts)   / [Releases](https://github.com/Codeception/module-asserts/releases)
 
 
 
@@ -4577,7 +5248,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-apc 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:06:05 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:06:05 / [Repository](https://github.com/Codeception/module-apc)   / [Releases](https://github.com/Codeception/module-apc/releases)
 
 
 
@@ -4586,7 +5257,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### module-amqp 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:05:50 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/10/18 11:05:50 / [Repository](https://github.com/Codeception/module-amqp)   / [Releases](https://github.com/Codeception/module-amqp/releases)
 
 
 
@@ -4595,7 +5266,7 @@ Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktib
 
 ### lib-asserts 1.0.0: Initial release
 
-Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16) Naktibalda](https://github.com/Naktibalda) on 2019/09/16 20:06:26 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
+Released by [![](https://avatars.githubusercontent.com/u/395992?v=4&s=16){:height="16" width="16"} Naktibalda](https://github.com/Naktibalda) on 2019/09/16 20:06:26 / [Repository](https://github.com/Codeception/lib-asserts)   / [Releases](https://github.com/Codeception/lib-asserts/releases)
 
 
 

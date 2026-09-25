@@ -239,6 +239,7 @@ public function seeResponseContains($text)
 * `param array` $files
 * `param array` $server
 * `param ?string` $content
+* `param bool` $changeHistory
 * `return void`
 
 Opens a page with arbitrary request parameters.
@@ -523,7 +524,7 @@ You can set additional cookie params like `domain`, `path` as array passed in la
 * `param string` $uri
 * `return void`
 
-Checks that the current URL doesn't equal the given string.
+Checks that the current URL (path) doesn't equal the given string.
 
 Unlike `dontSeeInCurrentUrl`, this only matches the full URL.
 
@@ -541,13 +542,13 @@ $I->dontSeeCurrentUrlEquals('/');
 * `param string` $uri
 * `return void`
 
-Checks that current url doesn't match the given regular expression.
+Checks that current URL (path) doesn't match the given regular expression.
 
 {% highlight php %}
 
 <?php
 // to match root url
-$I->dontSeeCurrentUrlMatches('~^/users/(\d+)~');
+$I->dontSeeCurrentUrlMatches('~^/users/\d+$~');
 
 {% endhighlight %}
 
@@ -586,7 +587,7 @@ Checks that no email was sent
 * `param string` $uri
 * `return void`
 
-Checks that the current URI doesn't contain the given string.
+Checks that the current URI (path) doesn't contain the given string.
 
 {% highlight php %}
 
@@ -1167,6 +1168,14 @@ $I->makeHtmlSnapshot();
 Moves back in history.
 
 
+#### moveForward
+
+* `param int` $numberOfSteps (default value 1)
+* `return void`
+
+Moves forward in history.
+
+
 #### resetCookie
 
 * `param ` $cookie
@@ -1254,14 +1263,12 @@ $I->seeCookie('PHPSESSID');
 * `param string` $uri
 * `return void`
 
-Checks that the current URL is equal to the given string.
-
-Unlike `seeInCurrentUrl`, this only matches the full URL.
+Checks that the current URL (path) is equal to the given string.
 
 {% highlight php %}
 
 <?php
-// to match root url
+// to match the home page
 $I->seeCurrentUrlEquals('/');
 
 {% endhighlight %}
@@ -1272,13 +1279,12 @@ $I->seeCurrentUrlEquals('/');
 * `param string` $uri
 * `return void`
 
-Checks that the current URL matches the given regular expression.
+Checks that the current URL (path) matches the given regular expression.
 
 {% highlight php %}
 
 <?php
-// to match root url
-$I->seeCurrentUrlMatches('~^/users/(\d+)~');
+$I->seeCurrentUrlMatches('~^/users/\d+$~');
 
 {% endhighlight %}
 
@@ -1431,9 +1437,9 @@ $form = [
      'checkbox1' => true,
      // ...
 ];
-$I->submitForm('//form[@id=my-form]', string $form, 'submitButton');
+$I->submitForm('//form[@id=my-form]', $form, 'submitButton');
 // $I->amOnPage('/path/to/form-page') may be needed
-$I->seeInFormFields('//form[@id=my-form]', string $form);
+$I->seeInFormFields('//form[@id=my-form]', $form);
 
 {% endhighlight %}
 

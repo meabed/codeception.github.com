@@ -34,7 +34,7 @@ and [HttpKernel Component](https://symfony.com/doc/current/components/http_kerne
 
 ### Config
 
-#### Symfony 5.4 or higher
+#### Symfony 5.4, 6.4, 7.4 or 8.1
 
 * `app_path`: 'src' - Specify custom path to your app dir, where the kernel interface is located.
 * `environment`: 'local' - Environment used for load kernel
@@ -45,7 +45,7 @@ and [HttpKernel Component](https://symfony.com/doc/current/components/http_kerne
 * `rebootable_client`: 'true' - Reboot client's kernel before each request
 * `guard`: 'false' - Enable custom authentication system with guard (only for Symfony 5.4)
 * `bootstrap`: 'false' - Enable the test environment setup with the tests/bootstrap.php file if it exists or with Symfony DotEnv otherwise. If false, it does nothing.
-* `authenticator`: 'false' - Reboot client's kernel before each request (only for Symfony 6.0 or higher)
+* `authenticator`: 'false' - Enable custom authentication system with authenticator (only for Symfony 6.0 or higher)
 
 ##### Sample `Functional.suite.yml`
 
@@ -64,9 +64,12 @@ and [HttpKernel Component](https://symfony.com/doc/current/components/http_kerne
 ### Parts
 
 * `services`: Includes methods related to the Symfony dependency injection container (DIC):
+    * grabContainer
     * grabService
+    * mockService
     * persistService
     * persistPermanentService
+    * unmockService
     * unpersistService
 
 See [WebDriver module](https://codeception.com/docs/modules/WebDriver#Loading-Parts-from-other-Modules)
@@ -91,7 +94,6 @@ modules:
 
 If you're using Symfony with Eloquent ORM (instead of Doctrine), you can load the [`ORM` part of Laravel module](https://codeception.com/docs/modules/Laravel#Parts)
 in addition to Symfony module.
-
 
 ### Actions
 
@@ -160,6 +162,7 @@ public function seeResponseContains($text)
 * `param array` $files
 * `param array` $server
 * `param ?string` $content
+* `param bool` $changeHistory
 * `return void`
 
 Opens a page with arbitrary request parameters.
@@ -268,6 +271,17 @@ $I->amLoggedInAs($user);
 * `param ?string` $firewallContext
 * `return void`
 
+Login with the given authentication token.
+
+If you have more than one firewall or firewall context, you can specify the desired one as a parameter.
+
+{% highlight php %}
+
+<?php
+$I->amLoggedInWithToken($token);
+
+{% endhighlight %}
+
 
 #### amOnAction
 
@@ -322,6 +336,57 @@ $I->amOnRoute('posts.show', ['id' => 34]);
 {% endhighlight %}
 
 
+#### assertAnySelectorTextContains
+
+* `param string` $selector
+* `param string` $text
+* `param string` $message
+* `return void`
+
+Asserts that at least one element matching the given selector contains the expected text.
+
+{% highlight php %}
+
+<?php
+$I->assertAnySelectorTextContains('.item', 'Available');
+
+{% endhighlight %}
+
+
+#### assertAnySelectorTextNotContains
+
+* `param string` $selector
+* `param string` $text
+* `param string` $message
+* `return void`
+
+Asserts that no element matching the given selector contains the expected text.
+
+{% highlight php %}
+
+<?php
+$I->assertAnySelectorTextNotContains('.item', 'Error');
+
+{% endhighlight %}
+
+
+#### assertAnySelectorTextSame
+
+* `param string` $selector
+* `param string` $text
+* `param string` $message
+* `return void`
+
+Asserts that at least one element matching the given selector has exactly the expected text.
+
+{% highlight php %}
+
+<?php
+$I->assertAnySelectorTextSame('.item', 'In stock');
+
+{% endhighlight %}
+
+
 #### assertBrowserCookieValueSame
 
 * `param string` $name
@@ -333,6 +398,13 @@ $I->amOnRoute('posts.show', ['id' => 34]);
 * `return void`
 
 Asserts that the given cookie in the test client is set to the expected value.
+
+{% highlight php %}
+
+<?php
+$I->assertBrowserCookieValueSame('cookie_name', 'expected_value');
+
+{% endhighlight %}
 
 
 #### assertBrowserHasCookie
@@ -347,6 +419,72 @@ Asserts that the test client has the specified cookie set.
 
 This indicates that the cookie was set by any response during the test.
 
+{% highlight yaml %}
+<?php
+$I->assertBrowserHasCookie('cookie_name');
+
+{% endhighlight %}
+
+
+#### assertBrowserHistoryIsNotOnFirstPage
+
+* `param string` $message
+* `return void`
+
+Asserts that the browser history is not currently on the first page.
+
+{% highlight php %}
+
+<?php
+$I->assertBrowserHistoryIsNotOnFirstPage();
+
+{% endhighlight %}
+
+
+#### assertBrowserHistoryIsNotOnLastPage
+
+* `param string` $message
+* `return void`
+
+Asserts that the browser history is not currently on the last page.
+
+{% highlight php %}
+
+<?php
+$I->assertBrowserHistoryIsNotOnLastPage();
+
+{% endhighlight %}
+
+
+#### assertBrowserHistoryIsOnFirstPage
+
+* `param string` $message
+* `return void`
+
+Asserts that the browser history is currently on the first page.
+
+{% highlight php %}
+
+<?php
+$I->assertBrowserHistoryIsOnFirstPage();
+
+{% endhighlight %}
+
+
+#### assertBrowserHistoryIsOnLastPage
+
+* `param string` $message
+* `return void`
+
+Asserts that the browser history is currently on the last page.
+
+{% highlight php %}
+
+<?php
+$I->assertBrowserHistoryIsOnLastPage();
+
+{% endhighlight %}
+
 
 #### assertBrowserNotHasCookie
 
@@ -360,6 +498,13 @@ Asserts that the test client does not have the specified cookie set.
 
 This indicates that the cookie was not set by any response during the test.
 
+{% highlight php %}
+
+<?php
+$I->assertBrowserNotHasCookie('cookie_name');
+
+{% endhighlight %}
+
 
 #### assertCheckboxChecked
 
@@ -368,6 +513,13 @@ This indicates that the cookie was not set by any response during the test.
 * `return void`
 
 Asserts that the checkbox with the given name is checked.
+
+{% highlight php %}
+
+<?php
+$I->assertCheckboxChecked('agree_terms');
+
+{% endhighlight %}
 
 
 #### assertCheckboxNotChecked
@@ -378,23 +530,130 @@ Asserts that the checkbox with the given name is checked.
 
 Asserts that the checkbox with the given name is not checked.
 
+{% highlight php %}
+
+<?php
+$I->assertCheckboxNotChecked('subscribe');
+
+{% endhighlight %}
+
+
+#### assertCommandFailed
+
+* `param \Symfony\Component\Console\Tester\ExecutionResult` $result
+* `param string` $message
+* `return void`
+
+Asserts that a command run with [`runCommand()`](https://codeception.com/docs/modules/Symfony#runCommand)
+exited with a non-zero (failure) status code.
+
+{% highlight php %}
+
+<?php
+$result = $I->runCommand('app:import-users', ['file' => 'broken.csv']);
+$I->assertCommandFailed($result);
+
+{% endhighlight %}
+
+
+#### assertCommandIsInvalid
+
+* `param \Symfony\Component\Console\Tester\ExecutionResult` $result
+* `param string` $message
+* `return void`
+
+Asserts that a command run with [`runCommand()`](https://codeception.com/docs/modules/Symfony#runCommand)
+exited with the "invalid" status code (`Command::INVALID`, i.e. `2`).
+
+{% highlight php %}
+
+<?php
+$result = $I->runCommand('app:import-users');
+$I->assertCommandIsInvalid($result);
+
+{% endhighlight %}
+
+
+#### assertCommandIsSuccessful
+
+* `param \Symfony\Component\Console\Tester\ExecutionResult` $result
+* `param string` $message
+* `return void`
+
+Asserts that a command run with [`runCommand()`](https://codeception.com/docs/modules/Symfony#runCommand)
+exited successfully (status code `0`).
+
+{% highlight php %}
+
+<?php
+$result = $I->runCommand('app:import-users', ['file' => 'users.csv']);
+$I->assertCommandIsSuccessful($result);
+
+{% endhighlight %}
+
+
+#### assertCommandResultEquals
+
+* `param \Symfony\Component\Console\Tester\ExecutionResult` $result
+* `param ?int` $expectedStatusCode
+* `param ?string` $expectedOutput
+* `param ?string` $expectedErrorOutput
+* `param ?string` $expectedDisplay
+* `param string` $message
+* `return void`
+
+Asserts on the parts of an {@see ExecutionResult} you pass: any of the
+status code, stdout, stderr and the combined display. Arguments left `null`
+are not checked.
+
+{% highlight php %}
+
+<?php
+$result = $I->runCommand('app:import-users', ['file' => 'broken.csv']);
+$I->assertCommandResultEquals(
+    $result,
+    expectedStatusCode: 1,
+    expectedErrorOutput: "Invalid CSV\n",
+);
+
+{% endhighlight %}
+
 
 #### assertEmailAddressContains
 
 * `param string` $headerName
 * `param string` $expectedValue
-* `param ?\Symfony\Component\Mime\Email` $email
+* `param ?\Symfony\Component\Mime\Message` $email
 * `return void`
 
-Verify that an email contains addresses with a [header](https://datatracker.ietf.org/doc/html/rfc4021)
+Verify that a message contains addresses with a [header](https://datatracker.ietf.org/doc/html/rfc4021)
 `$headerName` and its expected value `$expectedValue`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Message is specified, the last sent message is used instead.
 
 {% highlight php %}
 
 <?php
 $I->assertEmailAddressContains('To', 'jane_doe@example.com');
+
+{% endhighlight %}
+
+
+#### assertEmailAddressNotContains
+
+* `param string` $headerName
+* `param string` $expectedValue
+* `param ?\Symfony\Component\Mime\Message` $email
+* `return void`
+
+Verify that an email does not contain the given address in the specified header.
+
+If no Message is specified, the last sent message is used instead.
+
+{% highlight php %}
+
+<?php
+$I->assertEmailAddressNotContains('To', 'john_doe@example.com');
 
 {% endhighlight %}
 
@@ -405,9 +664,9 @@ $I->assertEmailAddressContains('To', 'jane_doe@example.com');
 * `param ?\Symfony\Component\Mime\Email` $email
 * `return void`
 
-Verify that an email has sent the specified number `$count` of attachments.
+Verify that an email has the specified number `$count` of attachments.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Email is specified, the last sent email is used instead.
 
 {% highlight php %}
 
@@ -426,16 +685,23 @@ $I->assertEmailAttachmentCount(1);
 
 Asserts that the expected number of emails was sent.
 
+{% highlight php %}
+
+<?php
+$I->assertEmailCount(2, 'smtp');
+
+{% endhighlight %}
+
 
 #### assertEmailHasHeader
 
 * `param string` $headerName
-* `param ?\Symfony\Component\Mime\Email` $email
+* `param ?\Symfony\Component\Mime\Message` $email
 * `return void`
 
-Verify that an email has a [header](https://datatracker.ietf.org/doc/html/rfc4021) `$headerName`.
+Verify that a message has a [header](https://datatracker.ietf.org/doc/html/rfc4021) `$headerName`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Message is specified, the last sent message is used instead.
 
 {% highlight php %}
 
@@ -449,13 +715,13 @@ $I->assertEmailHasHeader('Bcc');
 
 * `param string` $headerName
 * `param string` $expectedValue
-* `param ?\Symfony\Component\Mime\Email` $email
+* `param ?\Symfony\Component\Mime\Message` $email
 * `return void`
 
 Verify that the [header](https://datatracker.ietf.org/doc/html/rfc4021)
-`$headerName` of an email is not the expected one `$expectedValue`.
+`$headerName` of a message is not the expected one `$expectedValue`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Message is specified, the last sent message is used instead.
 
 {% highlight php %}
 
@@ -469,13 +735,13 @@ $I->assertEmailHeaderNotSame('To', 'john_doe@gmail.com');
 
 * `param string` $headerName
 * `param string` $expectedValue
-* `param ?\Symfony\Component\Mime\Email` $email
+* `param ?\Symfony\Component\Mime\Message` $email
 * `return void`
 
 Verify that the [header](https://datatracker.ietf.org/doc/html/rfc4021)
-`$headerName` of an email is the same as expected `$expectedValue`.
+`$headerName` of a message is the same as expected `$expectedValue`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Message is specified, the last sent message is used instead.
 
 {% highlight php %}
 
@@ -493,7 +759,7 @@ $I->assertEmailHeaderSame('To', 'jane_doe@gmail.com');
 
 Verify that the HTML body of an email contains `$text`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Email is specified, the last sent email is used instead.
 
 {% highlight php %}
 
@@ -511,7 +777,7 @@ $I->assertEmailHtmlBodyContains('Successful registration');
 
 Verify that the HTML body of an email does not contain a text `$text`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Email is specified, the last sent email is used instead.
 
 {% highlight php %}
 
@@ -531,6 +797,14 @@ Asserts that the given mailer event is not queued.
 
 Use `getMailerEvent(int $index = 0, ?string $transport = null)` to retrieve a mailer event by index.
 
+{% highlight php %}
+
+<?php
+$event = $I->getMailerEvent();
+$I->assertEmailIsNotQueued($event);
+
+{% endhighlight %}
+
 
 #### assertEmailIsQueued
 
@@ -542,21 +816,65 @@ Asserts that the given mailer event is queued.
 
 Use `getMailerEvent(int $index = 0, ?string $transport = null)` to retrieve a mailer event by index.
 
+{% highlight php %}
+
+<?php
+$event = $I->getMailerEvent();
+$I->assertEmailIsQueued($event);
+
+{% endhighlight %}
+
 
 #### assertEmailNotHasHeader
 
 * `param string` $headerName
-* `param ?\Symfony\Component\Mime\Email` $email
+* `param ?\Symfony\Component\Mime\Message` $email
 * `return void`
 
-Verify that an email does not have a [header](https://datatracker.ietf.org/doc/html/rfc4021) `$headerName`.
+Verify that a message does not have a [header](https://datatracker.ietf.org/doc/html/rfc4021) `$headerName`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Message is specified, the last sent message is used instead.
 
 {% highlight php %}
 
 <?php
 $I->assertEmailNotHasHeader('Bcc');
+
+{% endhighlight %}
+
+
+#### assertEmailSubjectContains
+
+* `param string` $expectedValue
+* `param ?\Symfony\Component\Mime\Email` $email
+* `return void`
+
+Verify that an email subject contains `$expectedValue`.
+
+If no Email is specified, the last sent email is used instead.
+
+{% highlight php %}
+
+<?php
+$I->assertEmailSubjectContains('Account created successfully');
+
+{% endhighlight %}
+
+
+#### assertEmailSubjectNotContains
+
+* `param string` $expectedValue
+* `param ?\Symfony\Component\Mime\Email` $email
+* `return void`
+
+Verify that an email subject does not contain `$expectedValue`.
+
+If no Email is specified, the last sent email is used instead.
+
+{% highlight php %}
+
+<?php
+$I->assertEmailSubjectNotContains('Password reset');
 
 {% endhighlight %}
 
@@ -569,7 +887,7 @@ $I->assertEmailNotHasHeader('Bcc');
 
 Verify the text body of an email contains a `$text`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Email is specified, the last sent email is used instead.
 
 {% highlight php %}
 
@@ -587,7 +905,7 @@ $I->assertEmailTextBodyContains('Example text body');
 
 Verify that the text body of an email does not contain a `$text`.
 
-If the Email object is not specified, the last email sent is used instead.
+If no Email is specified, the last sent email is used instead.
 
 {% highlight php %}
 
@@ -601,25 +919,46 @@ $I->assertEmailTextBodyNotContains('My secret text body');
 
 * `param string` $formSelector
 * `param string` $fieldName
-* `param string` $value
+* `param string` $expectedValue
 * `param string` $message
 * `return void`
 
 Asserts that value of the field of the first form matching the given selector does equal the expected value.
+
+{% highlight php %}
+
+<?php
+$I->assertFormValue('#loginForm', 'username', 'john_doe');
+
+{% endhighlight %}
 
 
 #### assertHttpClientRequest
 
 * `param string` $expectedUrl
 * `param string` $expectedMethod
-* `param array|string|null` $expectedBody
-* `param array` $expectedHeaders
+* `param string|array<mixed>|null` $expectedBody
+* `param array<string,string|string[]>` $expectedHeaders
 * `param string` $httpClientId
 * `return void`
 
-Asserts that the given URL has been called using, if specified, the given method body and headers.
+Asserts that the given URL has been called using, if specified, the given method, body and/or headers.
 
-By default, it will check on the HttpClient, but you can also pass a specific HttpClient ID. (It will succeed if the request has been called multiple times.)
+By default, it will inspect the default Symfony HttpClient; you may check a different one by passing its
+service-id in $httpClientId.
+It succeeds even if the request was executed multiple times.
+
+{% highlight php %}
+
+<?php
+$I->assertHttpClientRequest(
+    'https://example.com/api',
+    'POST',
+    '{"data": "value"}',
+    ['Authorization' => 'Bearer token']
+);
+
+{% endhighlight %}
 
 
 #### assertHttpClientRequestCount
@@ -628,9 +967,16 @@ By default, it will check on the HttpClient, but you can also pass a specific Ht
 * `param string` $httpClientId
 * `return void`
 
-Asserts that the given number of requests has been made on the HttpClient.
+Asserts that exactly $count requests have been executed by the given HttpClient.
 
-By default, it will check on the HttpClient, but you can also pass a specific HttpClient ID.
+By default, it will inspect the default Symfony HttpClient; you may check a different one by passing its
+service-id in $httpClientId.
+
+{% highlight php %}
+
+$I->assertHttpClientRequestCount(3);
+
+{% endhighlight %}
 
 
 #### assertInputValueNotSame
@@ -642,6 +988,13 @@ By default, it will check on the HttpClient, but you can also pass a specific Ht
 
 Asserts that the value of the form input with the given name does not equal the expected value.
 
+{% highlight php %}
+
+<?php
+$I->assertInputValueNotSame('username', 'admin');
+
+{% endhighlight %}
+
 
 #### assertInputValueSame
 
@@ -652,6 +1005,13 @@ Asserts that the value of the form input with the given name does not equal the 
 
 Asserts that the value of the form input with the given name equals the expected value.
 
+{% highlight php %}
+
+<?php
+$I->assertInputValueSame('username', 'johndoe');
+
+{% endhighlight %}
+
 
 #### assertNoFormValue
 
@@ -660,19 +1020,168 @@ Asserts that the value of the form input with the given name equals the expected
 * `param string` $message
 * `return void`
 
-Asserts that value of the field of the first form matching the given selector does equal the expected value.
+Asserts that the field of the first form matching the given selector does not have a value.
+
+{% highlight php %}
+
+<?php
+$I->assertNoFormValue('#registrationForm', 'middle_name');
+
+{% endhighlight %}
 
 
 #### assertNotHttpClientRequest
 
 * `param string` $unexpectedUrl
-* `param string` $expectedMethod
+* `param string` $unexpectedMethod
 * `param string` $httpClientId
 * `return void`
 
-Asserts that the given URL has not been called using GET or the specified method.
+Asserts that the given URL *has not* been requested with the supplied HTTP method.
 
-By default, it will check on the HttpClient, but a HttpClient id can be specified.
+By default, it will inspect the default Symfony HttpClient; you may check a different one by passing its
+service-id in $httpClientId.
+
+{% highlight php %}
+
+$I->assertNotHttpClientRequest('https://example.com/unexpected', 'GET');
+
+{% endhighlight %}
+
+
+#### assertNotificationCount
+
+* `param int` $count
+* `param ?string` $transportName
+* `param string` $message
+* `return void`
+
+Asserts that the expected number of notifications was sent.
+
+{% highlight php %}
+
+<?php
+$I->assertNotificationCount(2, 'smtp');
+
+{% endhighlight %}
+
+
+#### assertNotificationIsNotQueued
+
+* `param \Symfony\Component\Notifier\Event\MessageEvent` $event
+* `param string` $message
+* `return void`
+
+Asserts that the given notifier event is not queued.
+
+Use `getNotifierEvent(int $index = 0, ?string $transportName = null)` to retrieve a notifier event by index.
+
+{% highlight php %}
+
+<?php
+$event = $I->getNotifierEvent();
+$I->assertNotificationIsNotQueued($event);
+
+{% endhighlight %}
+
+
+#### assertNotificationIsQueued
+
+* `param \Symfony\Component\Notifier\Event\MessageEvent` $event
+* `param string` $message
+* `return void`
+
+Asserts that the given notifier event is queued.
+
+Use `getNotifierEvent(int $index = 0, ?string $transportName = null)` to retrieve a notifier event by index.
+
+{% highlight php %}
+
+<?php
+$event = $I->getNotifierEvent();
+$I->assertNotificationIsQueued($event);
+
+{% endhighlight %}
+
+
+#### assertNotificationSubjectContains
+
+* `param \Symfony\Component\Notifier\Message\MessageInterface` $notification
+* `param string` $text
+* `param string` $message
+* `return void`
+
+Asserts that the given notification contains given subject.
+
+Use `getNotifierMessage(int $index = 0, ?string $transportName = null)` to retrieve a notification by index.
+
+{% highlight php %}
+
+<?php
+$notification = $I->getNotifierMessage();
+$I->assertNotificationSubjectContains($notification, 'Subject');
+
+{% endhighlight %}
+
+
+#### assertNotificationSubjectNotContains
+
+* `param \Symfony\Component\Notifier\Message\MessageInterface` $notification
+* `param string` $text
+* `param string` $message
+* `return void`
+
+Asserts that the given notification does not contain given subject.
+
+Use `getNotifierMessage(int $index = 0, ?string $transportName = null)` to retrieve a notification by index.
+
+{% highlight php %}
+
+<?php
+$notification = $I->getNotifierMessage();
+$I->assertNotificationSubjectNotContains($notification, 'Subject');
+
+{% endhighlight %}
+
+
+#### assertNotificationTransportIsEqual
+
+* `param \Symfony\Component\Notifier\Message\MessageInterface` $notification
+* `param ?string` $transportName
+* `param string` $message
+* `return void`
+
+Asserts that the given notification uses given transport.
+
+Use `getNotifierMessage(int $index = 0, ?string $transportName = null)` to retrieve a notification by index.
+
+{% highlight php %}
+
+<?php
+$notification = $I->getNotifierMessage();
+$I->assertNotificationTransportIsEqual($notification, 'chat');
+
+{% endhighlight %}
+
+
+#### assertNotificationTransportIsNotEqual
+
+* `param \Symfony\Component\Notifier\Message\MessageInterface` $notification
+* `param ?string` $transportName
+* `param string` $message
+* `return void`
+
+Asserts that the given notification does not use given transport.
+
+Use `getNotifierMessage(int $index = 0, ?string $transportName = null)` to retrieve a notification by index.
+
+{% highlight php %}
+
+<?php
+$notification = $I->getNotifierMessage();
+$I->assertNotificationTransportIsNotEqual($notification, 'transport');
+
+{% endhighlight %}
 
 
 #### assertPageTitleContains
@@ -683,6 +1192,13 @@ By default, it will check on the HttpClient, but a HttpClient id can be specifie
 
 Asserts that the `<title>` element contains the given title.
 
+{% highlight php %}
+
+<?php
+$I->assertPageTitleContains('Welcome');
+
+{% endhighlight %}
+
 
 #### assertPageTitleSame
 
@@ -691,6 +1207,13 @@ Asserts that the `<title>` element contains the given title.
 * `return void`
 
 Asserts that the `<title>` element equals the given title.
+
+{% highlight php %}
+
+<?php
+$I->assertPageTitleSame('Home Page');
+
+{% endhighlight %}
 
 
 #### assertQueuedEmailCount
@@ -702,6 +1225,30 @@ Asserts that the `<title>` element equals the given title.
 
 Asserts that the expected number of emails was queued (e.g. using the Messenger component).
 
+{% highlight php %}
+
+<?php
+$I->assertQueuedEmailCount(1, 'smtp');
+
+{% endhighlight %}
+
+
+#### assertQueuedNotificationCount
+
+* `param int` $count
+* `param ?string` $transportName
+* `param string` $message
+* `return void`
+
+Asserts that the expected number of notifications was queued (e.g. using the Notifier component).
+
+{% highlight php %}
+
+<?php
+$I->assertQueuedNotificationCount(1, 'smtp');
+
+{% endhighlight %}
+
 
 #### assertRequestAttributeValueSame
 
@@ -711,6 +1258,13 @@ Asserts that the expected number of emails was queued (e.g. using the Messenger 
 * `return void`
 
 Asserts that the specified request attribute matches the expected value.
+
+{% highlight php %}
+
+<?php
+$I->assertRequestAttributeValueSame('attribute_name', 'expected_value');
+
+{% endhighlight %}
 
 
 #### assertResponseCookieValueSame
@@ -724,6 +1278,13 @@ Asserts that the specified request attribute matches the expected value.
 
 Asserts that the specified response cookie is present and matches the expected value.
 
+{% highlight php %}
+
+<?php
+$I->assertResponseCookieValueSame('cookie_name', 'expected_value');
+
+{% endhighlight %}
+
 
 #### assertResponseFormatSame
 
@@ -732,6 +1293,13 @@ Asserts that the specified response cookie is present and matches the expected v
 * `return void`
 
 Asserts that the response format matches the expected format. This checks the format returned by the `Response::getFormat()` method.
+
+{% highlight php %}
+
+<?php
+$I->assertResponseFormatSame('json');
+
+{% endhighlight %}
 
 
 #### assertResponseHasCookie
@@ -744,6 +1312,13 @@ Asserts that the response format matches the expected format. This checks the fo
 
 Asserts that the specified cookie is present in the response. Optionally, it can check for a specific cookie path or domain.
 
+{% highlight php %}
+
+<?php
+$I->assertResponseHasCookie('cookie_name');
+
+{% endhighlight %}
+
 
 #### assertResponseHasHeader
 
@@ -754,6 +1329,13 @@ Asserts that the specified cookie is present in the response. Optionally, it can
 Asserts that the specified header is available in the response.
 
 For example, use `assertResponseHasHeader('content-type');`.
+
+{% highlight php %}
+
+<?php
+$I->assertResponseHasHeader('content-type');
+
+{% endhighlight %}
 
 
 #### assertResponseHeaderNotSame
@@ -767,6 +1349,13 @@ Asserts that the specified header does not contain the expected value in the res
 
 For example, use `assertResponseHeaderNotSame('content-type', 'application/octet-stream');`.
 
+{% highlight php %}
+
+<?php
+$I->assertResponseHeaderNotSame('content-type', 'application/json');
+
+{% endhighlight %}
+
 
 #### assertResponseHeaderSame
 
@@ -779,6 +1368,13 @@ Asserts that the specified header contains the expected value in the response.
 
 For example, use `assertResponseHeaderSame('content-type', 'application/octet-stream');`.
 
+{% highlight php %}
+
+<?php
+$I->assertResponseHeaderSame('content-type', 'application/json');
+
+{% endhighlight %}
+
 
 #### assertResponseIsSuccessful
 
@@ -788,6 +1384,13 @@ For example, use `assertResponseHeaderSame('content-type', 'application/octet-st
 
 Asserts that the response was successful (HTTP status code is in the 2xx range).
 
+{% highlight php %}
+
+<?php
+$I->assertResponseIsSuccessful();
+
+{% endhighlight %}
+
 
 #### assertResponseIsUnprocessable
 
@@ -796,6 +1399,13 @@ Asserts that the response was successful (HTTP status code is in the 2xx range).
 * `return void`
 
 Asserts that the response is unprocessable (HTTP status code is 422).
+
+{% highlight php %}
+
+<?php
+$I->assertResponseIsUnprocessable();
+
+{% endhighlight %}
 
 
 #### assertResponseNotHasCookie
@@ -808,6 +1418,13 @@ Asserts that the response is unprocessable (HTTP status code is 422).
 
 Asserts that the specified cookie is not present in the response. Optionally, it can check for a specific cookie path or domain.
 
+{% highlight php %}
+
+<?php
+$I->assertResponseNotHasCookie('cookie_name');
+
+{% endhighlight %}
+
 
 #### assertResponseNotHasHeader
 
@@ -817,7 +1434,12 @@ Asserts that the specified cookie is not present in the response. Optionally, it
 
 Asserts that the specified header is not available in the response.
 
-For example, use `assertResponseNotHasHeader('content-type');`.
+{% highlight php %}
+
+<?php
+$I->assertResponseNotHasHeader('content-type');
+
+{% endhighlight %}
 
 
 #### assertResponseRedirects
@@ -832,6 +1454,14 @@ Asserts that the response is a redirect. Optionally, you can check the target lo
 
 The expected location can be either an absolute or a relative path.
 
+{% highlight php %}
+
+<?php
+// Check that '/admin' redirects to '/login' with status code 302
+$I->assertResponseRedirects('/login', 302);
+
+{% endhighlight %}
+
 
 #### assertResponseStatusCodeSame
 
@@ -841,6 +1471,13 @@ The expected location can be either an absolute or a relative path.
 * `return void`
 
 Asserts that the response status code matches the expected code.
+
+{% highlight php %}
+
+<?php
+$I->assertResponseStatusCodeSame(200);
+
+{% endhighlight %}
 
 
 #### assertRouteSame
@@ -852,6 +1489,30 @@ Asserts that the response status code matches the expected code.
 
 Asserts the request matches the given route and optionally route parameters.
 
+{% highlight php %}
+
+<?php
+$I->assertRouteSame('profile', ['id' => 123]);
+
+{% endhighlight %}
+
+
+#### assertSelectorCount
+
+* `param int` $expectedCount
+* `param string` $selector
+* `param string` $message
+* `return void`
+
+Asserts that the given selector matches the expected number of elements.
+
+{% highlight php %}
+
+<?php
+$I->assertSelectorCount(3, '.item');
+
+{% endhighlight %}
+
 
 #### assertSelectorExists
 
@@ -861,6 +1522,13 @@ Asserts the request matches the given route and optionally route parameters.
 
 Asserts that the given selector matches at least one element in the response.
 
+{% highlight php %}
+
+<?php
+$I->assertSelectorExists('.main-content');
+
+{% endhighlight %}
+
 
 #### assertSelectorNotExists
 
@@ -869,6 +1537,13 @@ Asserts that the given selector matches at least one element in the response.
 * `return void`
 
 Asserts that the given selector does not match at least one element in the response.
+
+{% highlight php %}
+
+<?php
+$I->assertSelectorNotExists('.error');
+
+{% endhighlight %}
 
 
 #### assertSelectorTextContains
@@ -880,6 +1555,13 @@ Asserts that the given selector does not match at least one element in the respo
 
 Asserts that the first element matching the given selector contains the expected text.
 
+{% highlight php %}
+
+<?php
+$I->assertSelectorTextContains('h1', 'Dashboard');
+
+{% endhighlight %}
+
 
 #### assertSelectorTextNotContains
 
@@ -890,6 +1572,13 @@ Asserts that the first element matching the given selector contains the expected
 
 Asserts that the first element matching the given selector does not contain the expected text.
 
+{% highlight php %}
+
+<?php
+$I->assertSelectorTextNotContains('p', 'error');
+
+{% endhighlight %}
+
 
 #### assertSelectorTextSame
 
@@ -899,6 +1588,45 @@ Asserts that the first element matching the given selector does not contain the 
 * `return void`
 
 Asserts that the text of the first element matching the given selector equals the expected text.
+
+{% highlight php %}
+
+<?php
+$I->assertSelectorTextSame('h1', 'Dashboard');
+
+{% endhighlight %}
+
+
+#### assertSessionHasFlashMessage
+
+* `param string` $messageType
+* `param string|list<string>` $messages
+* `return void`
+
+Asserts that the session has a flash message of the given type, optionally
+checking that it contains at least one of the given messages.
+
+This is a port of Symfony 8.1's `assertSessionHasFlashMessage()`: when one
+or more messages are given, the assertion passes if any of them is present
+in the type's channel. The flash bag is read with `peek()`, so the
+assertion is non-destructive and a later `see()` on the rendered page still
+works.
+
+Because templates consume the flash bag while rendering, the followed
+redirect page drains it before the assertion runs. Call
+[`stopFollowingRedirects()`](https://codeception.com/docs/modules/Symfony#stopFollowingRedirects)
+before the request so the flash survives.
+
+{% highlight php %}
+
+<?php
+$I->stopFollowingRedirects();
+$I->amOnPage('/register'); // an action that adds a flash and redirects
+$I->assertSessionHasFlashMessage('success');
+$I->assertSessionHasFlashMessage('success', 'Your account has been created.');
+$I->assertSessionHasFlashMessage('notice', ['First notice', 'Second notice']);
+
+{% endhighlight %}
 
 
 #### attachFile
@@ -965,6 +1693,30 @@ $I->click('//form/*[@type="submit"]');
 $I->click('Logout', '#nav');
 // using strict locator
 $I->click(['link' => 'Login']);
+
+{% endhighlight %}
+
+
+#### consumeMessengerMessages
+
+* `param string` $transportName
+* `param int` $limit
+* `return void`
+
+Processes messages waiting on an in-memory transport by dispatching them
+back through the message bus to their handlers, then acknowledging them.
+
+Use it to assert side effects that happen during handling (an email is sent,
+a row is written, another message is dispatched).
+
+Requires the bus to be routed to a Symfony in-memory transport
+(`MESSENGER_TRANSPORT_DSN=in-memory://`) in the test environment.
+
+{% highlight php %}
+
+<?php
+$I->consumeMessengerMessages('async');           // process one message
+$I->consumeMessengerMessages('async', limit: 5); // process up to five
 
 {% endhighlight %}
 
@@ -1057,7 +1809,7 @@ You can set additional cookie params like `domain`, `path` as array passed in la
 * `param string` $uri
 * `return void`
 
-Checks that the current URL doesn't equal the given string.
+Checks that the current URL (path) doesn't equal the given string.
 
 Unlike `dontSeeInCurrentUrl`, this only matches the full URL.
 
@@ -1075,13 +1827,13 @@ $I->dontSeeCurrentUrlEquals('/');
 * `param string` $uri
 * `return void`
 
-Checks that current url doesn't match the given regular expression.
+Checks that current URL (path) doesn't match the given regular expression.
 
 {% highlight php %}
 
 <?php
 // to match root url
-$I->dontSeeCurrentUrlMatches('~^/users/(\d+)~');
+$I->dontSeeCurrentUrlMatches('~^/users/\d+$~');
 
 {% endhighlight %}
 
@@ -1098,6 +1850,26 @@ Asserts that there are no deprecation messages in Symfony's log.
 <?php
 $I->amOnPage('/home');
 $I->dontSeeDeprecations();
+
+{% endhighlight %}
+
+
+#### dontSeeDuplicateQueries
+
+* `return void`
+
+Asserts that no identical SQL query was executed more than once during the
+last request — a common symptom of an N+1 problem.
+
+Transaction-control statements (`START TRANSACTION`, `COMMIT`, ...) are ignored,
+so legitimately repeated transaction boundaries are not flagged as duplicates.
+
+Reads Doctrine's `db` profiler collector, so it requires `doctrine/doctrine-bundle`.
+
+{% highlight php %}
+
+<?php
+$I->dontSeeDuplicateQueries();
 
 {% endhighlight %}
 
@@ -1130,42 +1902,47 @@ $I->dontSeeElement('input', ['value' => '123456']);
 Checks that no email was sent.
 
 The check is based on `\Symfony\Component\Mailer\EventListener\MessageLoggerListener`, which means:
-If your app performs an HTTP redirect, you need to suppress it using [stopFollowingRedirects()](https://codeception.com/docs/modules/Symfony#stopFollowingRedirects) first; otherwise this check will *always* pass.
+If your app performs an HTTP redirect, you need to suppress it using [stopFollowingRedirects()](#stopFollowingRedirects) first; otherwise this check will *always* pass.
+
+{% highlight php %}
+
+<?php
+$I->dontSeeEmailIsSent();
+
+{% endhighlight %}
 
 
 #### dontSeeEvent
 
-* `param string|string[]|null` $expected
+* `param class-string|list<class-string>|null` $expected Fully-qualified event class(es) that must **not** appear.
 * `return void`
 
-Verifies that there were no events during the test.
-
-Both regular and orphan events are checked.
+Verifies that **no** events (regular **or** orphan) were dispatched during the test.
 
 {% highlight php %}
 
- <?php
- $I->dontSeeEvent();
- $I->dontSeeEvent('App\MyEvent');
- $I->dontSeeEvent(['App\MyEvent', 'App\MyOtherEvent']);
- 
+<?php
+$I->dontSeeEvent();
+$I->dontSeeEvent('App\MyEvent');
+$I->dontSeeEvent(['App\MyEvent', 'App\MyOtherEvent']);
+
 {% endhighlight %}
 
 
 #### dontSeeEventListenerIsCalled
 
-* `param class-string|class-string[]` $expected
-* `param string|string[]` $events
+* `param class-string|object|list<class-string|object>` $expected Listeners (class-strings or object instances).
+* `param string|list<string>` $events Event name(s) (empty = any).
 * `return void`
 
-Verifies that one or more event listeners were not called during the test.
+Verifies that one or more **listeners** were **not** called during the test.
 
 {% highlight php %}
 
 <?php
 $I->dontSeeEventListenerIsCalled('App\MyEventListener');
 $I->dontSeeEventListenerIsCalled(['App\MyEventListener', 'App\MyOtherEventListener']);
-$I->dontSeeEventListenerIsCalled('App\MyEventListener', 'my.event);
+$I->dontSeeEventListenerIsCalled('App\MyEventListener', 'my.event');
 $I->dontSeeEventListenerIsCalled('App\MyEventListener', ['my.event', 'my.other.event']);
 
 {% endhighlight %}
@@ -1174,7 +1951,7 @@ $I->dontSeeEventListenerIsCalled('App\MyEventListener', ['my.event', 'my.other.e
 #### dontSeeEventTriggered
 
 @deprecated
-* `param object|string|string[]` $expected
+* `param class-string|object|list<class-string|object>` $expected
 * `return void`
 
 Verifies that one or more event listeners were not called during the test.
@@ -1222,7 +1999,7 @@ $I->dontSeeFormErrors();
 * `param string` $uri
 * `return void`
 
-Checks that the current URI doesn't contain the given string.
+Checks that the current URI (path) doesn't contain the given string.
 
 {% highlight php %}
 
@@ -1305,7 +2082,7 @@ $I->dontSeeInFormFields('#form-id', [
 #### dontSeeInSession
 
 * `param string` $attribute
-* `param mixed` $value
+* `param mixed` $expectedValue
 * `return void`
 
 Assert that a session attribute does not exist, or is not equal to the passed value.
@@ -1362,6 +2139,23 @@ $I->dontSeeLink('Checkout now', '/store/cart.php');
 {% endhighlight %}
 
 
+#### dontSeeMessageDispatched
+
+* `param class-string` $messageClass
+* `param ?string` $bus
+* `return void`
+
+Asserts no message of the given class was dispatched (optionally on a single bus).
+
+{% highlight php %}
+
+<?php
+$I->dontSeeMessageDispatched(SendWelcomeEmail::class);
+$I->dontSeeMessageDispatched(SendWelcomeEmail::class, 'messenger.bus.default');
+
+{% endhighlight %}
+
+
 #### dontSeeMissingTranslations
 
 * `return void`
@@ -1372,6 +2166,23 @@ Asserts that no missing translations were found.
 
 <?php
 $I->dontSeeMissingTranslations();
+
+{% endhighlight %}
+
+
+#### dontSeeNotificationIsSent
+
+* `return void`
+
+Checks that no notification was sent.
+
+The check is based on `\Symfony\Component\Notifier\EventListener\NotificationLoggerListener`, which means:
+If your app performs an HTTP redirect, you need to suppress it using [stopFollowingRedirects()](#stopFollowingRedirects) first; otherwise this check will *always* pass.
+
+{% highlight php %}
+
+<?php
+$I->dontSeeNotificationIsSent();
 
 {% endhighlight %}
 
@@ -1394,14 +2205,14 @@ $I->dontSeeOptionIsSelected('#form input[name=payment]', 'Visa');
 
 #### dontSeeOrphanEvent
 
-* `param string|string[]` $expected
+* `param class-string|list<class-string>|null` $expected Event class(es) that must **not** appear as orphan.
 * `return void`
 
 Verifies that there were no orphan events during the test.
 
 An orphan event is an event that was triggered by manually executing the
-[`dispatch()`](https://symfony.com/doc/current/components/event_dispatcher.html#dispatch-the-event) method
-of the EventDispatcher but was not handled by any listener after it was dispatched.
+{@link https://symfony.com/doc/current/components/event_dispatcher.html#dispatch-the-event dispatch()}
+method of the EventDispatcher but was not handled by any listener after it was dispatched.
 
 {% highlight php %}
 
@@ -1460,14 +2271,30 @@ $I->dontSeeResponseCodeIs(\Codeception\Util\HttpCode::OK);
 {% endhighlight %}
 
 
+#### dontSeeUserIsGranted
+
+* `param string` $attribute
+* `param mixed` $subject
+* `return void`
+
+Checks that the current user is not granted an attribute, optionally over a subject.
+
+{% highlight php %}
+
+<?php
+$I->dontSeeUserIsGranted('POST_DELETE', $post);
+
+{% endhighlight %}
+
+
 #### dontSeeViolatedConstraint
 
-* `param mixed` $subject
+* `param object` $subject
 * `param ?string` $propertyPath
 * `param ?string` $constraint
 * `return void`
 
-Asserts that the given subject fails validation.
+Asserts that the given subject passes validation.
 
 This assertion does not concern the exact number of violations.
 
@@ -1512,6 +2339,100 @@ $I->followRedirect();
 {% endhighlight %}
 
 
+#### getMailerEvent
+
+* `param int` $index
+* `param ?string` $transport
+* `return ?\Symfony\Component\Mailer\Event\MessageEvent`
+
+Returns the mailer event at the specified index.
+
+{% highlight php %}
+
+<?php
+$event = $I->getMailerEvent();
+
+{% endhighlight %}
+
+
+#### getMailerEvents
+
+* `param ?string` $transport
+* `return MessageEvent[]`
+
+Returns all mailer events for the given transport.
+
+{% highlight php %}
+
+<?php
+$events = $I->getMailerEvents();
+
+{% endhighlight %}
+
+
+#### getMailerMessage
+
+* `param int` $index
+* `param ?string` $transport
+* `return ?\Symfony\Component\Mime\RawMessage`
+
+Returns the mailer message at the specified index.
+
+{% highlight php %}
+
+<?php
+$message = $I->getMailerMessage();
+
+{% endhighlight %}
+
+
+#### getMailerMessages
+
+* `param ?string` $transport
+* `return RawMessage[]`
+
+Returns all sent mailer messages for the given transport.
+
+{% highlight php %}
+
+<?php
+$messages = $I->getMailerMessages();
+
+{% endhighlight %}
+
+
+#### getNotifierEvent
+
+* `param int` $index
+* `param ?string` $transportName
+* `return ?\Symfony\Component\Notifier\Event\MessageEvent`
+
+Returns the notifier event at the specified index.
+
+{% highlight php %}
+
+<?php
+$event = $I->getNotifierEvent();
+
+{% endhighlight %}
+
+
+#### getNotifierMessage
+
+* `param int` $index
+* `param ?string` $transportName
+* `return ?\Symfony\Component\Notifier\Message\MessageInterface`
+
+Returns the notifier message at the specified index.
+
+{% highlight php %}
+
+<?php
+$message = $I->getNotifierMessage();
+
+{% endhighlight %}
+
+
 #### goToLogoutPath
 
 * `return void`
@@ -1537,6 +2458,30 @@ Fails if the element is not found. Returns `null` if the attribute is not presen
 
 <?php
 $I->grabAttributeFrom('#tooltip', 'title');
+
+{% endhighlight %}
+
+
+#### grabContainer
+
+* `part` services
+* `return \Symfony\Component\DependencyInjection\ContainerInterface`
+
+Returns the Symfony dependency injection container (DIC).
+
+In the "test" environment this is Symfony's special `test.service_container`,
+so private services are reachable too, unlike
+`$I->grabService('kernel')->getContainer()`, which only ever exposes the public ones.
+
+The container belongs to the kernel that is currently booted, so grab it again after
+a request or a [`rebootClientKernel()`](#rebootClientKernel) instead of keeping it
+in a property.
+
+{% highlight php %}
+
+<?php
+$container = $I->grabContainer();
+$isDebug = $container->getParameter('kernel.debug');
 
 {% endhighlight %}
 
@@ -1567,6 +2512,47 @@ $count = $I->grabDefinedTranslations();
 {% endhighlight %}
 
 
+#### grabDispatchedMessageClasses
+
+* `param ?string` $bus
+* `return list<class-string>`
+
+Returns the dispatched message class names, in dispatch order (optionally for a single bus).
+
+The profiler stores cloned snapshots, so this yields class names, not the message objects.
+
+{% highlight php %}
+
+<?php
+$classes = $I->grabDispatchedMessageClasses();
+$classes = $I->grabDispatchedMessageClasses('messenger.bus.default');
+
+{% endhighlight %}
+
+
+#### grabEntityManager
+
+* `return \Doctrine\ORM\EntityManagerInterface`
+
+Returns the Doctrine EntityManager the module is configured to use:
+the `em_service` option, `doctrine.orm.entity_manager` by default.
+
+The manager is resolved from the container on every call, so it always belongs to the
+kernel that is currently booted. Don't keep it in a property across requests:
+[`amOnPage()`](#amOnPage) and friends reboot the kernel, which builds a new manager.
+
+To reach a manager other than the configured one, grab it by service id:
+`$I->grabService('doctrine.orm.other_entity_manager')`.
+
+{% highlight php %}
+
+<?php
+$em = $I->grabEntityManager();
+$user = $em->getRepository(User::class)->findOneBy(['email' => 'john_doe@gmail.com']);
+
+{% endhighlight %}
+
+
 #### grabFromCurrentUrl
 
 * `param ?string` $uri
@@ -1587,20 +2573,61 @@ $uri = $I->grabFromCurrentUrl();
 
 #### grabLastSentEmail
 
-* `return ?\Symfony\Component\Mime\Email`
+* `return ?\Symfony\Component\Mime\RawMessage`
 
-Returns the last sent email.
+Returns the last sent message or `null` if no message was sent.
 
+The return type is `RawMessage`, which covers both `Email` and `Message` objects.
 The function is based on `\Symfony\Component\Mailer\EventListener\MessageLoggerListener`, which means:
-If your app performs an HTTP redirect after sending the email, you need to suppress it using [stopFollowingRedirects()](https://codeception.com/docs/modules/Symfony#stopFollowingRedirects) first.
+If your app performs an HTTP redirect after sending the email, you need to suppress it using [stopFollowingRedirects()](#stopFollowingRedirects) first.
 See also: [grabSentEmails()](https://codeception.com/docs/modules/Symfony#grabSentEmails)
 
 {% highlight php %}
 
 <?php
 $email = $I->grabLastSentEmail();
-$address = $email->getTo()[0];
-$I->assertSame('john_doe@example.com', $address->getAddress());
+$I->assertEmailHasHeader('To', $email);
+
+{% endhighlight %}
+
+
+#### grabLastSentNotification
+
+* `return ?\Symfony\Component\Notifier\Message\MessageInterface`
+
+Returns the last sent notification.
+
+The check is based on `\Symfony\Component\Notifier\EventListener\NotificationLoggerListener`, which means:
+If your app performs an HTTP redirect after sending the notification, you need to suppress it using [stopFollowingRedirects()](#stopFollowingRedirects) first.
+See also: [grabSentNotifications()](https://codeception.com/docs/modules/Symfony#grabSentNotifications)
+
+{% highlight php %}
+
+<?php
+$message = $I->grabLastSentNotification();
+$I->assertSame('Subject', $message->getSubject());
+
+{% endhighlight %}
+
+
+#### grabMessengerTransport
+
+* `param string` $transportName
+* `return \Symfony\Component\Messenger\Transport\InMemory\InMemoryTransport`
+
+Grabs a Symfony in-memory transport so you can inspect the real message
+objects it holds via `getSent()`, `getAcknowledged()` and `getRejected()`.
+
+Unlike the profiler-based assertions, this exposes the actual envelopes
+(with their payload and stamps), not a lossy class-name snapshot.
+
+Requires the bus to be routed to a Symfony in-memory transport
+(`MESSENGER_TRANSPORT_DSN=in-memory://`) in the test environment.
+
+{% highlight php %}
+
+<?php
+$message = $I->grabMessengerTransport('async')->getSent()[0]->getMessage();
 
 {% endhighlight %}
 
@@ -1636,17 +2663,18 @@ $aLinks = $I->grabMultiple('a', 'href');
 
 #### grabNumRecords
 
-* `param string` $entityClass The entity class
-* `param array` $criteria Optional query criteria
+* `template` T of object
+* `param class-string<T>` $entityClass Fully-qualified entity class name
+* `param array` $criteria
 * `return int`
 
-Retrieves number of records from database
-'id' is the default search parameter.
+Returns the number of rows that match the given criteria for the
+specified Doctrine entity.
 
 {% highlight php %}
 
 <?php
-$I->grabNumRecords('User::class', ['name' => 'davert']);
+$I->grabNumRecords(User::class, ['status' => 'active']);
 
 {% endhighlight %}
 
@@ -1662,7 +2690,7 @@ Grabs current page source code.
 #### grabParameter
 
 * `param string` $parameterName
-* `return \UnitEnum|array|string|int|float|bool|null`
+* `return array<array-key,` mixed>|bool|string|int|float|UnitEnum|null
 
 Grabs a Symfony parameter
 
@@ -1677,32 +2705,32 @@ This only works for explicitly set parameters (just using `bind` for Symfony's d
 
 #### grabRepository
 
-* `param object|string` $mixed
-* `return ?\Doctrine\ORM\EntityRepository`
+* `template` T of object
+* `param object|class-string<T>` $entityOrClass
+* `return ($entityOrClass` is class-string<T> ? EntityRepository<T> : EntityRepository<object>)
 
-Grab a Doctrine entity repository.
-
-Works with objects, entities, repositories, and repository interfaces.
+Obtains the Doctrine entity repository {@see EntityRepository}
+for a given entity, repository class or interface.
 
 {% highlight php %}
 
 <?php
-$I->grabRepository($user);
-$I->grabRepository(User::class);
-$I->grabRepository(UserRepository::class);
-$I->grabRepository(UserRepositoryInterface::class);
+$I->grabRepository($user);                          // entity object
+$I->grabRepository(User::class);                    // entity class
+$I->grabRepository(UserRepository::class);          // concrete repo
+$I->grabRepository(UserRepositoryInterface::class); // interface
 
 {% endhighlight %}
 
 
 #### grabSentEmails
 
-* `return \Symfony\Component\Mime\Email[]`
+* `return RawMessage[]`
 
 Returns an array of all sent emails.
 
 The function is based on `\Symfony\Component\Mailer\EventListener\MessageLoggerListener`, which means:
-If your app performs an HTTP redirect after sending the email, you need to suppress it using [stopFollowingRedirects()](https://codeception.com/docs/modules/Symfony#stopFollowingRedirects) first.
+If your app performs an HTTP redirect after sending the email, you need to suppress it using [stopFollowingRedirects()](#stopFollowingRedirects) first.
 See also: [grabLastSentEmail()](https://codeception.com/docs/modules/Symfony#grabLastSentEmail)
 
 {% highlight php %}
@@ -1713,17 +2741,36 @@ $emails = $I->grabSentEmails();
 {% endhighlight %}
 
 
+#### grabSentNotifications
+
+* `return MessageInterface[]`
+
+Returns an array of all sent notifications.
+
+The check is based on `\Symfony\Component\Notifier\EventListener\NotificationLoggerListener`, which means:
+If your app performs an HTTP redirect after sending the notification, you need to suppress it using [stopFollowingRedirects()](#stopFollowingRedirects) first.
+See also: [grabLastSentNotification()](https://codeception.com/docs/modules/Symfony#grabLastSentNotification)
+
+{% highlight php %}
+
+<?php
+$notifications = $I->grabSentNotifications();
+
+{% endhighlight %}
+
+
 #### grabService
 
 * `part` services
-* `param string` $serviceId
-* `return object`
+* `template` T of object
+* `param string|class-string<T>` $serviceId
+* `return ($serviceId` is class-string<T> ? T : object)
 
 Grabs a service from the Symfony dependency injection container (DIC).
 
-In "test" environment, Symfony uses a special `test.service_container`.
+In the "test" environment, Symfony uses a special `test.service_container`.
 See the "[Public Versus Private Services](https://symfony.com/doc/current/service_container/alias_private.html#marking-services-as-public-private)" documentation.
-Services that aren't injected somewhere into your app, need to be defined as `public` to be accessible by Codeception.
+Services that aren't injected anywhere in your app, need to be defined as `public` to be accessible by Codeception.
 
 {% highlight php %}
 
@@ -1875,6 +2922,32 @@ $I->makeHtmlSnapshot();
 {% endhighlight %}
 
 
+#### mockService
+
+* `part` services
+* `param non-empty-string` $serviceId
+* `param object` $replacement
+* `return void`
+
+Replaces a service in the container with a test double (mock, stub or fake).
+
+Build the double however you like — Codeception `Stub`, PHPUnit mocks,
+Mockery, or a hand-written fake — then swap it in. The replacement is kept
+as a persistent service, so it survives the kernel reboots that happen
+between requests and stays active for the rest of the test.
+
+Typical uses: stub outbound HTTP, freeze the clock, or replace a collaborator.
+
+{% highlight php %}
+
+<?php
+$I->mockService('http_client', new MockHttpClient($responses));
+$I->mockService(PaymentGateway::class, $this->makeEmpty(PaymentGateway::class));
+$I->mockService('clock', new MockClock('2030-01-01'));
+
+{% endhighlight %}
+
+
 #### moveBack
 
 * `param int` $numberOfSteps (default value 1)
@@ -1883,10 +2956,18 @@ $I->makeHtmlSnapshot();
 Moves back in history.
 
 
+#### moveForward
+
+* `param int` $numberOfSteps (default value 1)
+* `return void`
+
+Moves forward in history.
+
+
 #### persistPermanentService
 
 * `part` services
-* `param string` $serviceName
+* `param non-empty-string` $serviceName
 * `return void`
 
 Get service $serviceName and add it to the lists of persistent services,
@@ -1896,7 +2977,7 @@ making that service persistent between tests.
 #### persistService
 
 * `part` services
-* `param string` $serviceName
+* `param non-empty-string` $serviceName
 * `return void`
 
 Get service $serviceName and add it to the lists of persistent services.
@@ -1935,17 +3016,82 @@ Unsets cookie with the given name.
 You can set additional cookie params like `domain`, `path` in array passed as last argument.
 
 
+#### resetDoctrineManager
+
+* `param non-empty-string|null` $name Manager name as registered in Doctrine's registry,
+                                   `null` for the default one.
+* `return void`
+
+Resets the Doctrine EntityManager.
+
+Doctrine closes the EntityManager as soon as an exception escapes a `flush()`:
+a unique constraint violation, a deadlock, a failed transaction. Every write after
+that throws `EntityManagerClosed`, which usually surfaces as an unrelated failure
+further down the test. Call this after deliberately provoking such an error to carry
+on with a healthy manager.
+
+If the manager is still open it is only cleared, detaching every managed entity,
+which is handy to prove that the next read really hits the database.
+The open test transaction is preserved either way: the manager is rebuilt,
+the DBAL connection underneath it is not.
+
+{% highlight php %}
+
+<?php
+$I->amOnPage('/register');
+$I->resetDoctrineManager();
+$I->seeNumRecords(1, User::class);
+
+{% endhighlight %}
+
+
+#### runCommand
+
+* `param string` $name
+* `param array` $input
+* `param list<string>` $interactiveInputs Inputs for interactive questions
+* `param ?bool` $interactive
+* `param ?bool` $decorated
+* `param OutputInterface::VERBOSITY_*|null` $verbosity
+* `param array` $normalizers
+* `return \Symfony\Component\Console\Tester\ExecutionResult`
+
+Runs a console command and returns its {@see ExecutionResult}, which exposes
+the exit status code together with stdout, stderr and the combined display as
+separate streams.
+
+Unlike [`runSymfonyConsoleCommand()`](https://codeception.com/docs/modules/Symfony#runSymfonyConsoleCommand),
+which merges stdout and stderr into a single string, this lets you assert on
+the error output in isolation. Pair it with [`assertCommandIsSuccessful()`](https://codeception.com/docs/modules/Symfony#assertCommandIsSuccessful),
+[`assertCommandFailed()`](https://codeception.com/docs/modules/Symfony#assertCommandFailed),
+[`assertCommandIsInvalid()`](https://codeception.com/docs/modules/Symfony#assertCommandIsInvalid)
+or [`assertCommandResultEquals()`](https://codeception.com/docs/modules/Symfony#assertCommandResultEquals).
+
+Requires `symfony/console` 8.1 or higher; on older versions use `runSymfonyConsoleCommand()`.
+
+{% highlight php %}
+
+<?php
+$result = $I->runCommand('app:import-users', ['file' => 'broken.csv']);
+$I->assertCommandFailed($result);
+$I->assertStringContainsString('Invalid CSV', $result->getErrorOutput());
+
+{% endhighlight %}
+
+
 #### runSymfonyConsoleCommand
 
-* `param string` $command The console command to execute
-* `param array` $parameters Parameters (arguments and options) to pass to the command
-* `param array` $consoleInputs Console inputs (e.g. used for interactive questions)
-* `param int` $expectedExitCode The expected exit code of the command
-* `return string` Returns the console output of the command
+* `param string` $command The console command to execute.
+* `param array` $parameters
+* `param list<string>` $consoleInputs Inputs for interactive questions.
+* `param int` $expectedExitCode Expected exit code.
+* `return string` Console output (stdout).
 
 Run Symfony console command, grab response and return as string.
 
-Recommended to use for integration or functional testing.
+Recommended to use for functional testing.
+
+Note: The command execution is isolated to bypass global application events, preventing unintended side effects.
 
 {% highlight php %}
 
@@ -2056,7 +3202,7 @@ $I->seeCookie('PHPSESSID');
 
 #### seeCurrentActionIs
 
-* `param string` $action
+* `param non-empty-string` $action
 * `return void`
 
 Checks that current page matches action
@@ -2107,14 +3253,12 @@ $I->seeCurrentTemplateIs('home.html.twig');
 * `param string` $uri
 * `return void`
 
-Checks that the current URL is equal to the given string.
-
-Unlike `seeInCurrentUrl`, this only matches the full URL.
+Checks that the current URL (path) is equal to the given string.
 
 {% highlight php %}
 
 <?php
-// to match root url
+// to match the home page
 $I->seeCurrentUrlEquals('/');
 
 {% endhighlight %}
@@ -2125,13 +3269,12 @@ $I->seeCurrentUrlEquals('/');
 * `param string` $uri
 * `return void`
 
-Checks that the current URL matches the given regular expression.
+Checks that the current URL (path) matches the given regular expression.
 
 {% highlight php %}
 
 <?php
-// to match root url
-$I->seeCurrentUrlMatches('~^/users/(\d+)~');
+$I->seeCurrentUrlMatches('~^/users/\d+$~');
 
 {% endhighlight %}
 
@@ -2147,6 +3290,42 @@ Asserts that the default locale is the expected one.
 
 <?php
 $I->seeDefaultLocaleIs('en');
+
+{% endhighlight %}
+
+
+#### seeDispatchedMessageCount
+
+* `param int` $expectedCount
+* `param ?string` $bus
+* `return void`
+
+Asserts how many messages were dispatched (optionally on a single bus).
+
+{% highlight php %}
+
+<?php
+$I->seeDispatchedMessageCount(1);
+$I->seeDispatchedMessageCount(2, 'messenger.bus.default');
+
+{% endhighlight %}
+
+
+#### seeDoctrineSchemaIsValid
+
+* `return void`
+
+Asserts that the Doctrine mapping is valid and that the database schema is in sync with it.
+
+In-process equivalent of `bin/console doctrine:schema:validate`: it catches mapping mistakes
+and missing migrations before they surface as unrelated failures in other tests.
+
+The entity manager checked is the one configured in the module's `em_service` option.
+
+{% highlight php %}
+
+<?php
+$I->seeDoctrineSchemaIsValid();
 
 {% endhighlight %}
 
@@ -2184,7 +3363,12 @@ $I->seeElement(['css' => 'form input'], ['name' => 'login']);
 Checks if the given number of emails was sent (default `$expectedCount`: 1).
 
 The check is based on `\Symfony\Component\Mailer\EventListener\MessageLoggerListener`, which means:
-If your app performs an HTTP redirect after sending the email, you need to suppress it using [stopFollowingRedirects()](https://codeception.com/docs/modules/Symfony#stopFollowingRedirects) first.
+If your app performs an HTTP redirect after sending the email, you need to suppress it using [stopFollowingRedirects()](#stopFollowingRedirects) first.
+
+Limitation:
+If your mail is sent in a Symfony console command and you start that command in your test with [$I->runShellCommand()](https://codeception.com/docs/modules/Cli#runShellCommand),
+Codeception will not notice it.
+As a more professional alternative, we recommend Mailpit (see [Addons](https://codeception.com/addons)), which also lets you test the content of the mail.
 
 {% highlight php %}
 
@@ -2196,39 +3380,34 @@ $I->seeEmailIsSent(2);
 
 #### seeEvent
 
-* `param string|string[]` $expected
+* `param class-string|list<class-string>` $expected Fully-qualified class-name(s) of the expected event(s).
 * `return void`
 
-Verifies that one or more events were dispatched during the test.
-
-Both regular and orphan events are checked.
-
-If you need to verify that expected event is not orphan,
-add `dontSeeOrphanEvent` call.
+Verifies that at least one of the given events **was** dispatched (regular **or** orphan).
 
 {% highlight php %}
 
- <?php
- $I->seeEvent('App\MyEvent');
- $I->seeEvent(['App\MyEvent', 'App\MyOtherEvent']);
- 
+<?php
+$I->seeEvent('App\MyEvent');
+$I->seeEvent(['App\MyEvent', 'App\MyOtherEvent']);
+
 {% endhighlight %}
 
 
 #### seeEventListenerIsCalled
 
-* `param class-string|class-string[]` $expected
-* `param string|string[]` $events
+* `param class-string|object|list<class-string|object>` $expected Listeners (class-strings or object instances).
+* `param string|list<string>` $events Event name(s) (empty = any).
 * `return void`
 
-Verifies that one or more event listeners were called during the test.
+Verifies that one or more **listeners** were called during the test.
 
 {% highlight php %}
 
 <?php
 $I->seeEventListenerIsCalled('App\MyEventListener');
 $I->seeEventListenerIsCalled(['App\MyEventListener', 'App\MyOtherEventListener']);
-$I->seeEventListenerIsCalled('App\MyEventListener', 'my.event);
+$I->seeEventListenerIsCalled('App\MyEventListener', 'my.event');
 $I->seeEventListenerIsCalled('App\MyEventListener', ['my.event', 'my.other.event']);
 
 {% endhighlight %}
@@ -2237,7 +3416,7 @@ $I->seeEventListenerIsCalled('App\MyEventListener', ['my.event', 'my.other.event
 #### seeEventTriggered
 
 @deprecated
-* `param object|string|string[]` $expected
+* `param class-string|object|list<class-string|object>` $expected
 * `return void`
 
 Verifies that one or more event listeners were called during the test.
@@ -2254,7 +3433,7 @@ $I->seeEventTriggered(['App\MyEvent', 'App\MyOtherEvent']);
 
 #### seeFallbackLocalesAre
 
-* `param array` $expectedLocales The expected fallback locales
+* `param string[]` $expectedLocales The expected fallback locales
 * `return void`
 
 Asserts that the fallback locales match the expected ones.
@@ -2303,13 +3482,13 @@ $I->seeFormErrorMessage('username', 'Username is empty');
 
 #### seeFormErrorMessages
 
-* `param string[]` $expectedErrors
+* `param array` $expectedErrors
 * `return void`
 
 Verifies that multiple fields on a form have errors.
 
-If you only specify the name of the fields, this method will
-verify that the field contains at least one error of any type:
+Use a list of field names when you only need to assert that each field
+has at least one validation error:
 
 {% highlight php %}
 
@@ -2318,28 +3497,22 @@ $I->seeFormErrorMessages(['telephone', 'address']);
 
 {% endhighlight %}
 
-If you want to specify the error messages, you can do so
-by sending an associative array instead, with the key being
-the name of the field and the error message the value.
-
-This method will validate that the expected error message
-is contained in the actual error message, that is,
-you can specify either the entire error message or just a part of it:
+Use an associative array to also verify the error text for one or more
+fields. The expected message is matched as a substring, so partial
+fragments are allowed:
 
 {% highlight php %}
 
 <?php
 $I->seeFormErrorMessages([
-    'address'   => 'The address is too long'
-    'telephone' => 'too short', // the full error message is 'The telephone is too short'
+    'address'   => 'The address is too long',
+    'telephone' => 'too short',
 ]);
 
 {% endhighlight %}
 
-If you don't want to specify the error message for some fields,
-you can pass `null` as value instead of the message string,
-or you can directly omit the value of that field. If that is the case,
-it will be validated that that field has at least one error of any type:
+You can mix both styles in the same call. If a field maps to `null`,
+only the existence of an error is checked for that field:
 
 {% highlight php %}
 
@@ -2374,7 +3547,7 @@ $I->seeFormHasErrors();
 
 Checks that current url matches route.
 
-Unlike seeCurrentRouteIs, this can matches without exact route parameters
+Unlike seeCurrentRouteIs, this can match without exact route parameters
 
 {% highlight php %}
 
@@ -2486,9 +3659,9 @@ $form = [
      'checkbox1' => true,
      // ...
 ];
-$I->submitForm('//form[@id=my-form]', string $form, 'submitButton');
+$I->submitForm('//form[@id=my-form]', $form, 'submitButton');
 // $I->amOnPage('/path/to/form-page') may be needed
-$I->seeInFormFields('//form[@id=my-form]', string $form);
+$I->seeInFormFields('//form[@id=my-form]', $form);
 
 {% endhighlight %}
 
@@ -2496,7 +3669,7 @@ $I->seeInFormFields('//form[@id=my-form]', string $form);
 #### seeInSession
 
 * `param string` $attribute
-* `param mixed` $value
+* `param mixed` $expectedValue
 * `return void`
 
 Assert that a session attribute exists.
@@ -2560,6 +3733,56 @@ $I->seeLink('Logout','/logout'); // matches <a href="/logout">Logout</a>
 {% endhighlight %}
 
 
+#### seeMessageDispatched
+
+* `param class-string` $messageClass
+* `param ?string` $bus
+* `return void`
+
+Asserts at least one message of the given class was dispatched (optionally on a single bus).
+
+{% highlight php %}
+
+<?php
+$I->seeMessageDispatched(SendWelcomeEmail::class);
+$I->seeMessageDispatched(SendWelcomeEmail::class, 'messenger.bus.default');
+
+{% endhighlight %}
+
+
+#### seeMessengerQueueCount
+
+* `param int` $expectedCount
+* `param string` $transportName
+* `return void`
+
+Asserts how many messages are still waiting on an in-memory transport
+(sent but not yet acknowledged or rejected).
+
+{% highlight php %}
+
+<?php
+$I->seeMessengerQueueCount(1, 'async');
+
+{% endhighlight %}
+
+
+#### seeMessengerTransportContains
+
+* `param class-string` $messageClass
+* `param string` $transportName
+* `return void`
+
+Asserts that a message of the given class is waiting on an in-memory transport.
+
+{% highlight php %}
+
+<?php
+$I->seeMessengerTransportContains(SendInvoice::class, 'async');
+
+{% endhighlight %}
+
+
 #### seeMissingTranslationsCountLessThan
 
 * `param int` $limit Maximum count of missing translations
@@ -2575,14 +3798,55 @@ $I->seeMissingTranslationsCountLessThan(5);
 {% endhighlight %}
 
 
-#### seeNumRecords
+#### seeNotificationIsSent
 
-* `param int` $expectedNum Expected number of records
-* `param string` $className A doctrine entity
-* `param array` $criteria Optional query criteria
+* `param int` $expectedCount The expected number of notifications sent
 * `return void`
 
-Checks that number of given records were found in database.
+Checks if the given number of notifications was sent (default `$expectedCount`: 1).
+
+The check is based on `\Symfony\Component\Notifier\EventListener\NotificationLoggerListener`, which means:
+If your app performs an HTTP redirect after sending the notification, you need to suppress it using [stopFollowingRedirects()](#stopFollowingRedirects) first.
+
+{% highlight php %}
+
+<?php
+$I->seeNotificationIsSent(2);
+
+{% endhighlight %}
+
+
+#### seeNumQueriesIsLessThan
+
+* `param int` $expectedCount
+* `return void`
+
+Asserts that fewer than the given number of database queries were executed
+during the last request — a ceiling guard against N+1 problems.
+
+Transaction-control statements (`START TRANSACTION`, `COMMIT`, ...) are not
+counted, so the number reflects the application queries only.
+
+Reads Doctrine's `db` profiler collector, so it requires `doctrine/doctrine-bundle`.
+Counts are environment-sensitive, so assert a ceiling rather than an exact number.
+
+{% highlight php %}
+
+<?php
+$I->seeNumQueriesIsLessThan(5);
+
+{% endhighlight %}
+
+
+#### seeNumRecords
+
+* `template` T of object
+* `param int` $expectedNum Expected count
+* `param class-string<T>` $className Entity class
+* `param array` $criteria
+* `return void`
+
+Asserts that a given number of records exists for the entity.
 
 'id' is the default search parameter.
 
@@ -2630,14 +3894,14 @@ $I->seeOptionIsSelected('#form input[name=payment]', 'Visa');
 
 #### seeOrphanEvent
 
-* `param string|string[]` $expected
+* `param class-string|list<class-string>` $expected Event class-name(s) expected to be orphan.
 * `return void`
 
-Verifies that one or more orphan events were dispatched during the test.
+Verifies that one or more orphan events **were** dispatched during the test.
 
 An orphan event is an event that was triggered by manually executing the
-[`dispatch()`](https://symfony.com/doc/current/components/event_dispatcher.html#dispatch-the-event) method
-of the EventDispatcher but was not handled by any listener after it was dispatched.
+{@link https://symfony.com/doc/current/components/event_dispatcher.html#dispatch-the-event dispatch()}
+method of the EventDispatcher but was not handled by any listener after it was dispatched.
 
 {% highlight php %}
 
@@ -2841,6 +4105,26 @@ $I->seeUserHasRoles(['ROLE_USER', 'ROLE_ADMIN']);
 {% endhighlight %}
 
 
+#### seeUserIsGranted
+
+* `param string` $attribute
+* `param mixed` $subject
+* `return void`
+
+Checks that the current user is granted an attribute, optionally over a subject.
+
+This runs the application's voters through `Security::isGranted()`, so unlike
+`seeUserHasRole()` it also covers custom voters and permissions that depend on
+the object being accessed.
+
+{% highlight php %}
+
+<?php
+$I->seeUserIsGranted('POST_EDIT', $post);
+
+{% endhighlight %}
+
+
 #### seeUserPasswordDoesNotNeedRehash
 
 * `param UserInterface|null` $user
@@ -2848,7 +4132,7 @@ $I->seeUserHasRoles(['ROLE_USER', 'ROLE_ADMIN']);
 
 Checks that the user's password would not benefit from rehashing.
 
-If the user is not provided it is taken from the current session.
+If the user is not provided, it is taken from the current session.
 
 You might use this function after performing tasks like registering a user or submitting a password update form.
 
@@ -2863,12 +4147,12 @@ $I->seeUserPasswordDoesNotNeedRehash($user);
 
 #### seeViolatedConstraint
 
-* `param mixed` $subject
+* `param object` $subject
 * `param ?string` $propertyPath
 * `param ?string` $constraint
 * `return void`
 
-Asserts that the given subject passes validation.
+Asserts that the given subject fails validation.
 
 This assertion does not concern the exact number of violations.
 
@@ -2885,7 +4169,7 @@ $I->seeViolatedConstraint($subject, 'propertyName', 'Symfony\Validator\Constrain
 #### seeViolatedConstraintMessage
 
 * `param string` $expected
-* `param mixed` $subject
+* `param object` $subject
 * `param string` $propertyPath
 * `return void`
 
@@ -2902,7 +4186,7 @@ $I->seeViolatedConstraintMessage('too short', $user, 'address');
 #### seeViolatedConstraintsCount
 
 * `param int` $expected
-* `param mixed` $subject
+* `param object` $subject
 * `param ?string` $propertyPath
 * `param ?string` $constraint
 * `return void`
@@ -3349,10 +4633,26 @@ $I->uncheckOption('#notify');
 {% endhighlight %}
 
 
+#### unmockService
+
+* `part` services
+* `param non-empty-string` $serviceId
+* `return void`
+
+Removes a previously mocked service, restoring the real one on the next kernel reboot.
+
+{% highlight php %}
+
+<?php
+$I->unmockService('http_client');
+
+{% endhighlight %}
+
+
 #### unpersistService
 
 * `part` services
-* `param string` $serviceName
+* `param non-empty-string` $serviceName
 * `return void`
 
 Remove service $serviceName from the lists of persistent services.
